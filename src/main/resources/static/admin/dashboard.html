@@ -1,10 +1,1404 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Railway Booking</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .admin-navbar {
+
+            min-height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 10px 5%;
+
+            background: #ffffff;
+
+            box-shadow:
+                    0 2px 12px rgba(0,0,0,.08);
+        }
+
+        .admin-logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-logo strong {
+            font-size: 25px;
+        }
+
+        .admin-logo small {
+            color: #777;
+            font-size: 11px;
+        }
+
+        .admin-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .admin-avatar {
+
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #315b9b;
+
+            color: white;
+
+            font-weight: 800;
+        }
+
+        .logout-btn {
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 7px;
+
+            background: #ffe5e5;
+
+            color: #c62828;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        /* ================= LAYOUT ================= */
+
+        .admin-layout {
+
+            display: flex;
+
+            min-height:
+                    calc(100vh - 72px);
+        }
+
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+
+            width: 245px;
+
+            background: #ffffff;
+
+            border-right: 1px solid #e5e8ed;
+
+            padding: 25px 15px;
+        }
+
+        .sidebar-title {
+
+            padding: 0 12px;
+
+            margin-bottom: 12px;
+
+            color: #888;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 13px;
+
+            margin-bottom: 5px;
+
+            border-radius: 7px;
+
+            text-decoration: none;
+
+            color: #444;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+
+            background: #e8eef7;
+
+            color: #315b9b;
+        }
+
+
+        /* ================= CONTENT ================= */
+
+        .admin-content {
+
+            flex: 1;
+
+            padding: 30px;
+
+            overflow-x: hidden;
+        }
+
+        .page-heading {
+
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+
+            margin: 0 0 7px;
+
+            font-size: 29px;
+        }
+
+        .page-heading p {
+
+            margin: 0;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                    0 5px 18px rgba(0,0,0,.06);
+        }
+
+        .stat-icon {
+
+            font-size: 25px;
+
+            margin-bottom: 12px;
+        }
+
+        .stat-card span {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+        .stat-card strong {
+
+            font-size: 27px;
+        }
+
+
+        /* ================= SECTION ================= */
+
+        .admin-section {
+
+            background: #ffffff;
+
+            border-radius: 13px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                    0 5px 18px rgba(0,0,0,.06);
+        }
+
+        .section-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+
+            margin: 0;
+
+            font-size: 20px;
+        }
+
+
+        /* ================= SEARCH ================= */
+
+        .table-search {
+
+            width: 250px;
+
+            height: 40px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 7px;
+
+            padding: 0 12px;
+
+            outline: none;
+        }
+
+        .table-search:focus {
+
+            border-color: #315b9b;
+        }
+
+
+        /* ================= TABLE ================= */
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 750px;
+        }
+
+        th,
+        td {
+
+            padding: 13px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
+        }
+
+        th {
+
+            background: #f5f7fa;
+
+            color: #555;
+
+            font-size: 12px;
+        }
+
+        tr:hover td {
+
+            background: #fafbfd;
+        }
+
+
+        /* ================= BUTTON ================= */
+
+        .admin-btn {
+
+            border: none;
+
+            padding: 8px 12px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .admin-btn.primary {
+
+            background: #315b9b;
+
+            color: white;
+        }
+
+        .admin-btn.danger {
+
+            background: #ffe5e5;
+
+            color: #c62828;
+        }
+
+
+        /* ================= QUICK ACTIONS ================= */
+
+        .quick-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+        .quick-action {
+
+            border: 1px solid #e0e4e9;
+
+            background: #ffffff;
+
+            padding: 20px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            transition: .2s;
+        }
+
+        .quick-action:hover {
+
+            border-color: #315b9b;
+
+            background: #f5f8fc;
+
+            transform: translateY(-2px);
+        }
+
+        .quick-action div {
+
+            font-size: 28px;
+
+            margin-bottom: 9px;
+        }
+
+        .quick-action strong {
+
+            display: block;
+
+            font-size: 14px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .quick-actions {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+
+                width: 70px;
+
+                padding: 20px 8px;
+            }
+
+            .sidebar-title {
+
+                display: none;
+            }
+
+            .sidebar a {
+
+                justify-content: center;
+
+                font-size: 0;
+
+                padding: 13px;
+            }
+
+            .sidebar a span {
+
+                font-size: 22px;
+            }
+
+            .admin-content {
+
+                padding: 20px;
+            }
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 550px) {
+
+            .admin-navbar {
+
+                padding: 10px 15px;
+            }
+
+            .admin-logo strong {
+
+                font-size: 21px;
+            }
+
+            .admin-profile div:not(.admin-avatar) {
+
+                display: none;
+            }
+
+            .admin-layout {
+
+                display: block;
+            }
+
+            .sidebar {
+
+                width: 100%;
+
+                height: auto;
+
+                display: flex;
+
+                overflow-x: auto;
+
+                border-right: none;
+
+                border-bottom: 1px solid #eee;
+
+                padding: 8px;
+            }
+
+            .sidebar a {
+
+                min-width: 55px;
+
+                margin: 0 3px;
+            }
+
+            .admin-content {
+
+                padding: 18px 14px;
+            }
+
+            .page-heading h1 {
+
+                font-size: 24px;
+            }
+
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+            .table-search {
+
+                width: 100%;
+            }
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-$END$
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="admin-navbar">
+
+    <div class="admin-logo">
+
+        <strong>
+            🚆 Railway Admin
+        </strong>
+
+        <small>
+            Management Panel
+        </small>
+
+    </div>
+
+
+    <div class="admin-profile">
+
+        <div>
+
+            <strong id="adminName">
+                Administrator
+            </strong>
+
+            <br>
+
+            <small>
+                Admin
+            </small>
+
+        </div>
+
+
+        <div class="admin-avatar">
+            A
+        </div>
+
+
+        <button
+                class="logout-btn"
+                onclick="adminLogout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= LAYOUT ================= -->
+
+<div class="admin-layout">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            Management
+        </div>
+
+
+        <a
+                href="admin.html"
+                class="active">
+
+            <span>📊</span>
+            Dashboard
+
+        </a>
+
+
+        <a href="#users">
+
+            <span>👥</span>
+            Users
+
+        </a>
+
+
+        <a href="#trains">
+
+            <span>🚆</span>
+            Trains
+
+        </a>
+
+
+        <a href="#stations">
+
+            <span>🚉</span>
+            Stations
+
+        </a>
+
+
+        <a href="#schedules">
+
+            <span>📅</span>
+            Schedules
+
+        </a>
+
+
+        <a href="#bookings">
+
+            <span>🎫</span>
+            Bookings
+
+        </a>
+
+
+        <a href="#payments">
+
+            <span>💳</span>
+            Payments
+
+        </a>
+
+    </aside>
+
+
+    <!-- ================= CONTENT ================= -->
+
+    <main class="admin-content">
+
+
+        <!-- HEADING -->
+
+        <div class="page-heading">
+
+            <h1>
+                Admin Dashboard
+            </h1>
+
+            <p>
+                Manage users, trains,
+                stations, schedules,
+                bookings and payments.
+            </p>
+
+        </div>
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <span>
+                    Total Users
+                </span>
+
+                <strong id="totalUsers">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🚆
+                </div>
+
+                <span>
+                    Total Trains
+                </span>
+
+                <strong id="totalTrains">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🚉
+                </div>
+
+                <span>
+                    Total Stations
+                </span>
+
+                <strong id="totalStations">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🎫
+                </div>
+
+                <span>
+                    Total Bookings
+                </span>
+
+                <strong id="totalBookings">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    💳
+                </div>
+
+                <span>
+                    Total Payments
+                </span>
+
+                <strong id="totalPayments">
+                    0
+                </strong>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ================= QUICK ACTIONS ================= -->
+
+        <section class="admin-section">
+
+            <div class="section-header">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <div
+                        class="quick-action"
+                        onclick="
+                        location.href =
+                        '#trains'
+                    ">
+
+                    <div>
+                        🚆
+                    </div>
+
+                    <strong>
+                        Manage Trains
+                    </strong>
+
+                </div>
+
+
+                <div
+                        class="quick-action"
+                        onclick="
+                        location.href =
+                        '#stations'
+                    ">
+
+                    <div>
+                        🚉
+                    </div>
+
+                    <strong>
+                        Manage Stations
+                    </strong>
+
+                </div>
+
+
+                <div
+                        class="quick-action"
+                        onclick="
+                        location.href =
+                        '#bookings'
+                    ">
+
+                    <div>
+                        🎫
+                    </div>
+
+                    <strong>
+                        View Bookings
+                    </strong>
+
+                </div>
+
+
+                <div
+                        class="quick-action"
+                        onclick="
+                        location.href =
+                        '#payments'
+                    ">
+
+                    <div>
+                        💳
+                    </div>
+
+                    <strong>
+                        View Payments
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= USERS ================= -->
+
+        <section
+                class="admin-section"
+                id="users">
+
+            <div class="section-header">
+
+                <h2>
+                    Users
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search users..."
+                        onkeyup="
+                        filterTable(
+                            'userSearch',
+                            'usersTable'
+                        )
+                    "
+                        id="userSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="usersTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Name</th>
+
+                        <th>Email</th>
+
+                        <th>Mobile</th>
+
+                        <th>Role</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="userTableBody">
+
+                    <tr>
+
+                        <td colspan="6">
+                            Loading users...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TRAINS ================= -->
+
+        <section
+                class="admin-section"
+                id="trains">
+
+            <div class="section-header">
+
+                <h2>
+                    Trains
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search trains..."
+                        onkeyup="
+                        filterTable(
+                            'trainSearch',
+                            'trainsTable'
+                        )
+                    "
+                        id="trainSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="trainsTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Train No</th>
+
+                        <th>Name</th>
+
+                        <th>Source</th>
+
+                        <th>Destination</th>
+
+                        <th>Seats</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="trainTableBody">
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading trains...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATIONS ================= -->
+
+        <section
+                class="admin-section"
+                id="stations">
+
+            <div class="section-header">
+
+                <h2>
+                    Stations
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search stations..."
+                        onkeyup="
+                        filterTable(
+                            'stationSearch',
+                            'stationsTable'
+                        )
+                    "
+                        id="stationSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="stationsTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Code</th>
+
+                        <th>Station</th>
+
+                        <th>City</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="stationTableBody">
+
+                    <tr>
+
+                        <td colspan="5">
+                            Loading stations...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SCHEDULES ================= -->
+
+        <section
+                class="admin-section"
+                id="schedules">
+
+            <div class="section-header">
+
+                <h2>
+                    Train Schedules
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search schedules..."
+                        onkeyup="
+                        filterTable(
+                            'scheduleSearch',
+                            'scheduleTable'
+                        )
+                    "
+                        id="scheduleSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="scheduleTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Train</th>
+
+                        <th>Source</th>
+
+                        <th>Destination</th>
+
+                        <th>Departure</th>
+
+                        <th>Arrival</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="scheduleTableBody">
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading schedules...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= BOOKINGS ================= -->
+
+        <section
+                class="admin-section"
+                id="bookings">
+
+            <div class="section-header">
+
+                <h2>
+                    Bookings
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search bookings..."
+                        onkeyup="
+                        filterTable(
+                            'bookingSearch',
+                            'bookingTable'
+                        )
+                    "
+                        id="bookingSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="bookingTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>PNR</th>
+
+                        <th>User</th>
+
+                        <th>From</th>
+
+                        <th>To</th>
+
+                        <th>Date</th>
+
+                        <th>Fare</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="bookingTableBody">
+
+                    <tr>
+
+                        <td colspan="8">
+                            Loading bookings...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PAYMENTS ================= -->
+
+        <section
+                class="admin-section"
+                id="payments">
+
+            <div class="section-header">
+
+                <h2>
+                    Payments
+                </h2>
+
+                <input
+                        type="text"
+                        class="table-search"
+                        placeholder="Search payments..."
+                        onkeyup="
+                        filterTable(
+                            'paymentSearch',
+                            'paymentTable'
+                        )
+                    "
+                        id="paymentSearch">
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table id="paymentTable">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Transaction ID</th>
+
+                        <th>Booking ID</th>
+
+                        <th>Amount</th>
+
+                        <th>Method</th>
+
+                        <th>Status</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="paymentTableBody">
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading payments...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- ================= JS ================= -->
+
+<script src="js/api.js"></script>
+
+<script src="js/admin.js"></script>
+
+
+<script>
+
+    /*
+     * Display logged-in admin name
+     */
+
+    const adminName =
+        localStorage.getItem(
+            "userName"
+        );
+
+
+    if (adminName) {
+
+        document.getElementById(
+            "adminName"
+        ).textContent =
+            adminName;
+    }
+
+</script>
+
+
 </body>
+
 </html>

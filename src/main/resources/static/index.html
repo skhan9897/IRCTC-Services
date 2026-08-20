@@ -1,10 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IRCTC Railway Booking</title>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-$END$
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        <span>IRCTC</span>
+        <small>Railway Booking</small>
+    </div>
+
+    <nav>
+        <a href="index.html" class="active">Home</a>
+        <a href="search-train.html">Search Train</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </nav>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Welcome to IRCTC Railway Booking</h1>
+
+        <p>
+            Search trains, check seat availability
+            and book your journey easily.
+        </p>
+
+
+        <!-- SEARCH BOX -->
+
+        <div class="search-box">
+
+            <h2>Search Train</h2>
+
+            <div class="search-fields">
+
+                <!-- FROM -->
+
+                <div class="input-group">
+
+                    <label for="from">
+                        From Station
+                    </label>
+
+                    <input
+                            type="text"
+                            id="from"
+                            placeholder="Enter departure station"
+                            autocomplete="off">
+
+                </div>
+
+
+                <!-- TO -->
+
+                <div class="input-group">
+
+                    <label for="to">
+                        To Station
+                    </label>
+
+                    <input
+                            type="text"
+                            id="to"
+                            placeholder="Enter destination station"
+                            autocomplete="off">
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="input-group">
+
+                    <label for="journeyDate">
+                        Journey Date
+                    </label>
+
+                    <input
+                            type="date"
+                            id="journeyDate">
+
+                </div>
+
+
+                <!-- SEARCH BUTTON -->
+
+                <button
+                        type="button"
+                        class="search-btn"
+                        onclick="searchTrain()">
+
+                    Search Train
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features">
+
+    <h2>Why Choose Our Railway Booking?</h2>
+
+    <div class="feature-container">
+
+        <div class="feature-card">
+
+            <div class="icon">🚆</div>
+
+            <h3>Search Trains</h3>
+
+            <p>
+                Search available trains between
+                your preferred stations.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="icon">🎫</div>
+
+            <h3>Easy Booking</h3>
+
+            <p>
+                Select your train, passengers
+                and preferred class.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="icon">💳</div>
+
+            <h3>Secure Payment</h3>
+
+            <p>
+                Complete your booking with
+                secure online payment.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="icon">📄</div>
+
+            <h3>PNR Ticket</h3>
+
+            <p>
+                Get your confirmed booking
+                and PNR details.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-content">
+
+        <h3>IRCTC Railway Booking</h3>
+
+        <p>
+            Your journey, our responsibility.
+        </p>
+
+        <p>
+            © 2026 IRCTC Railway Booking.
+            All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+    // Set today's date as minimum date
+    const today = new Date()
+        .toISOString()
+        .split("T")[0];
+
+    document
+        .getElementById("journeyDate")
+        .setAttribute("min", today);
+
+
+    // Search Train
+    function searchTrain() {
+
+        const from =
+            document
+                .getElementById("from")
+                .value
+                .trim();
+
+        const to =
+            document
+                .getElementById("to")
+                .value
+                .trim();
+
+        const journeyDate =
+            document
+                .getElementById("journeyDate")
+                .value;
+
+
+        // Validation
+
+        if (!from) {
+
+            alert("Please enter departure station.");
+
+            return;
+        }
+
+
+        if (!to) {
+
+            alert("Please enter destination station.");
+
+            return;
+        }
+
+
+        if (!journeyDate) {
+
+            alert("Please select journey date.");
+
+            return;
+        }
+
+
+        if (
+            from.toLowerCase() ===
+            to.toLowerCase()
+        ) {
+
+            alert(
+                "From and To stations cannot be same."
+            );
+
+            return;
+        }
+
+
+        // Save search information
+
+        localStorage.setItem(
+            "from",
+            from
+        );
+
+        localStorage.setItem(
+            "to",
+            to
+        );
+
+        localStorage.setItem(
+            "journeyDate",
+            journeyDate
+        );
+
+
+        // Open search page
+
+        window.location.href =
+            "search-train.html";
+    }
+
+</script>
+
 </body>
+
 </html>

@@ -1,10 +1,937 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - IRCTC</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+        }
+
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .profile-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #777;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+
+            border-radius: 50%;
+
+            background: #e8eef7;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 42px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 46px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #d5d9df;
+            border-radius: 7px;
+
+            padding: 0 13px;
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #315b9b;
+
+            box-shadow:
+                    0 0 0 3px rgba(49,91,155,0.10);
+        }
+
+        .form-group input:disabled {
+            background: #f2f4f7;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        .role-box {
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 13px;
+
+            background: #f2f4f7;
+
+            border-radius: 7px;
+
+            color: #555;
+
+            font-weight: 600;
+        }
+
+        .password-section {
+            border-top: 1px solid #eee;
+
+            margin-top: 10px;
+            padding-top: 25px;
+        }
+
+        .password-section h3 {
+            margin-bottom: 18px;
+        }
+
+        .button-area {
+            display: flex;
+            gap: 12px;
+
+            margin-top: 15px;
+            padding-top: 20px;
+
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            height: 46px;
+
+            padding: 0 25px;
+
+            border: none;
+            border-radius: 7px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .update-btn {
+            background: #315b9b;
+            color: white;
+        }
+
+        .reset-btn {
+            background: #eef1f5;
+            color: #333;
+        }
+
+        .message {
+            display: none;
+
+            padding: 12px;
+
+            margin-bottom: 20px;
+
+            border-radius: 7px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #e3f6e8;
+            color: #187a35;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #ffe5e5;
+            color: #c62828;
+        }
+
+        .account-info {
+            margin-top: 25px;
+
+            background: #f7f9fc;
+
+            padding: 20px;
+
+            border-radius: 9px;
+        }
+
+        .account-info h3 {
+            margin-bottom: 15px;
+        }
+
+        .account-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 8px 0;
+
+            border-bottom: 1px solid #e5e8ed;
+        }
+
+        .account-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-row span:first-child {
+            color: #777;
+        }
+
+        @media (max-width: 650px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .account-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-$END$
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+
+        <span>IRCTC</span>
+
+        <small>
+            Railway Booking
+        </small>
+
+    </div>
+
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="search-train.html">
+            Search Train
+        </a>
+
+        <a href="my-bookings.html">
+            My Bookings
+        </a>
+
+        <a href="profile.html"
+           class="active">
+            Profile
+        </a>
+
+        <a href="#"
+           onclick="logout()">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= PROFILE ================= -->
+
+<main class="profile-container">
+
+
+    <section class="profile-header">
+
+        <h1>
+            👤 My Profile
+        </h1>
+
+        <p>
+            View and update your account information.
+        </p>
+
+    </section>
+
+
+    <section class="profile-card">
+
+
+        <div class="profile-avatar">
+            👤
+        </div>
+
+
+        <div id="message"
+             class="message">
+        </div>
+
+
+        <!-- PROFILE FORM -->
+
+        <form id="profileForm">
+
+
+            <div class="form-grid">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                            type="text"
+                            id="name"
+                            required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                            type="email"
+                            id="email"
+                            required>
+
+                </div>
+
+
+                <!-- MOBILE -->
+
+                <div class="form-group">
+
+                    <label for="mobile">
+                        Mobile Number
+                    </label>
+
+                    <input
+                            type="text"
+                            id="mobile"
+                            maxlength="15"
+                            required>
+
+                </div>
+
+
+                <!-- ROLE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Account Role
+                    </label>
+
+                    <div
+                            class="role-box"
+                            id="role">
+
+                        USER
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="password-section">
+
+                <h3>
+                    Change Password
+                </h3>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            New Password
+                        </label>
+
+                        <input
+                                type="password"
+                                id="password"
+                                placeholder="Leave blank to keep current password">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Confirm new password">
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-area">
+
+                <button
+                        type="submit"
+                        class="btn update-btn"
+                        id="updateBtn">
+
+                    Update Profile
+
+                </button>
+
+
+                <button
+                        type="button"
+                        class="btn reset-btn"
+                        onclick="loadProfile()">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <!-- ACCOUNT INFO -->
+
+        <div class="account-info">
+
+            <h3>
+                Account Information
+            </h3>
+
+
+            <div class="account-row">
+
+                <span>
+                    User ID
+                </span>
+
+                <strong id="userIdDisplay">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="account-row">
+
+                <span>
+                    Account Created
+                </span>
+
+                <strong id="createdAt">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+    const userId =
+        localStorage.getItem("userId");
+
+
+    // =========================
+    // LOGIN CHECK
+    // =========================
+
+    if (!userId) {
+
+        window.location.href =
+            "login.html";
+    }
+
+
+    // =========================
+    // MESSAGE
+    // =========================
+
+    function showMessage(
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                "message"
+            );
+
+        element.textContent =
+            message;
+
+        element.className =
+            "message " + type;
+    }
+
+
+    // =========================
+    // LOAD PROFILE
+    // =========================
+
+    async function loadProfile() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${userId}`
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.text();
+
+                throw new Error(
+                    error ||
+                    "Unable to load profile"
+                );
+            }
+
+
+            const user =
+                await response.json();
+
+
+            document.getElementById(
+                "name"
+            ).value =
+                user.name || "";
+
+
+            document.getElementById(
+                "email"
+            ).value =
+                user.email || "";
+
+
+            document.getElementById(
+                "mobile"
+            ).value =
+                user.mobile || "";
+
+
+            document.getElementById(
+                "role"
+            ).textContent =
+                user.role || "USER";
+
+
+            document.getElementById(
+                "userIdDisplay"
+            ).textContent =
+                user.id || userId;
+
+
+            document.getElementById(
+                "createdAt"
+            ).textContent =
+                formatDate(
+                    user.createdAt
+                );
+
+
+            /*
+             * Password fields are always
+             * empty for security.
+             */
+
+            document.getElementById(
+                "password"
+            ).value = "";
+
+
+            document.getElementById(
+                "confirmPassword"
+            ).value = "";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to load profile: " +
+                error.message,
+                "error"
+            );
+        }
+    }
+
+
+    // =========================
+    // UPDATE PROFILE
+    // =========================
+
+    document
+        .getElementById("profileForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById(
+                        "name"
+                    ).value.trim();
+
+
+                const email =
+                    document.getElementById(
+                        "email"
+                    ).value.trim();
+
+
+                const mobile =
+                    document.getElementById(
+                        "mobile"
+                    ).value.trim();
+
+
+                const password =
+                    document.getElementById(
+                        "password"
+                    ).value;
+
+
+                const confirmPassword =
+                    document.getElementById(
+                        "confirmPassword"
+                    ).value;
+
+
+                if (!name ||
+                    !email ||
+                    !mobile) {
+
+                    showMessage(
+                        "Please fill all required fields.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    password &&
+                    password !== confirmPassword
+                ) {
+
+                    showMessage(
+                        "Passwords do not match.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const updateBtn =
+                    document.getElementById(
+                        "updateBtn"
+                    );
+
+
+                updateBtn.disabled = true;
+
+                updateBtn.textContent =
+                    "Updating...";
+
+
+                const userData = {
+
+                    name: name,
+
+                    email: email,
+
+                    mobile: mobile
+
+                };
+
+
+                /*
+                 * Password only sent when
+                 * user wants to change it.
+                 */
+
+                if (password) {
+
+                    userData.password =
+                        password;
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/users/${userId}`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        userData
+                                    )
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    let data;
+
+                    try {
+
+                        data =
+                            JSON.parse(text);
+
+                    } catch {
+
+                        data = {
+                            message: text
+                        };
+                    }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            "Profile update failed"
+                        );
+                    }
+
+
+                    /*
+                     * Update local storage
+                     */
+
+                    localStorage.setItem(
+                        "userName",
+                        data.name || name
+                    );
+
+                    localStorage.setItem(
+                        "userEmail",
+                        data.email || email
+                    );
+
+
+                    showMessage(
+                        "Profile updated successfully.",
+                        "success"
+                    );
+
+
+                    /*
+                     * Clear password fields
+                     */
+
+                    document.getElementById(
+                        "password"
+                    ).value = "";
+
+                    document.getElementById(
+                        "confirmPassword"
+                    ).value = "";
+
+
+                    updateBtn.disabled = false;
+
+                    updateBtn.textContent =
+                        "Update Profile";
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    showMessage(
+                        error.message ||
+                        "Profile update failed.",
+                        "error"
+                    );
+
+
+                    updateBtn.disabled = false;
+
+                    updateBtn.textContent =
+                        "Update Profile";
+                }
+
+            }
+        );
+
+
+    // =========================
+    // FORMAT DATE
+    // =========================
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+        try {
+
+            return new Date(value)
+                .toLocaleString();
+
+        } catch {
+
+            return value;
+        }
+    }
+
+
+    // =========================
+    // LOGOUT
+    // =========================
+
+    function logout() {
+
+        localStorage.clear();
+
+        window.location.href =
+            "index.html";
+    }
+
+
+    // =========================
+    // INITIAL LOAD
+    // =========================
+
+    loadProfile();
+
+</script>
+
 </body>
+
 </html>

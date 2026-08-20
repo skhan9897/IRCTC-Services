@@ -1,10 +1,860 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Ticket - IRCTC</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            background: #f4f7fb;
+        }
+
+        .booking-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #666;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .train-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f5f7fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .info-box strong {
+            font-size: 16px;
+        }
+
+        .passenger {
+            border: 1px solid #ddd;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .passenger-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .passenger-header h3 {
+            font-size: 17px;
+        }
+
+        .remove-btn {
+            border: none;
+            background: #ffe5e5;
+            color: #c62828;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #d5d9df;
+            border-radius: 7px;
+            padding: 0 12px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #315b9b;
+        }
+
+        .add-btn {
+            width: 100%;
+            height: 45px;
+            background: #eef3fa;
+            color: #315b9b;
+            border: 1px solid #315b9b;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .add-btn:hover {
+            background: #315b9b;
+            color: white;
+        }
+
+        .fare-box {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .fare-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .total {
+            font-size: 20px;
+            font-weight: 800;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .continue-btn {
+            width: 100%;
+            height: 50px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #315b9b;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .continue-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 800px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .train-info,
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-$END$
+
+<header class="navbar">
+
+    <div class="logo">
+        <span>IRCTC</span>
+        <small>Railway Booking</small>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="search-train.html">Search Train</a>
+        <a href="my-bookings.html">My Bookings</a>
+        <a href="profile.html">Profile</a>
+    </nav>
+
+</header>
+
+
+<main class="booking-container">
+
+    <div class="page-title">
+
+        <h1>Book Your Ticket</h1>
+
+        <p>Enter passenger details and confirm your journey</p>
+
+    </div>
+
+
+    <div class="booking-grid">
+
+        <!-- ================= TRAIN DETAILS ================= -->
+
+        <div class="card">
+
+            <h2>🚆 Journey Details</h2>
+
+            <div class="train-info">
+
+                <div class="info-box">
+                    <span>Train Number</span>
+                    <strong id="trainNumber">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Train Name</span>
+                    <strong id="trainName">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>From</span>
+                    <strong id="fromStation">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>To</span>
+                    <strong id="toStation">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Journey Date</span>
+                    <strong id="journeyDate">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Class</span>
+                    <strong id="classType">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Departure</span>
+                    <strong id="departureTime">-</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Arrival</span>
+                    <strong id="arrivalTime">-</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= PASSENGERS ================= -->
+
+        <div class="card">
+
+            <h2>👤 Passenger Details</h2>
+
+            <div id="passengerContainer"></div>
+
+            <button
+                    type="button"
+                    class="add-btn"
+                    onclick="addPassenger()">
+
+                + Add Passenger
+
+            </button>
+
+            <div class="fare-box">
+
+                <div class="fare-row">
+                    <span>Passengers</span>
+                    <strong id="passengerCount">1</strong>
+                </div>
+
+                <div class="fare-row">
+                    <span>Fare / Passenger</span>
+                    <strong>₹<span id="farePerPassenger">0</span></strong>
+                </div>
+
+                <div class="fare-row total">
+                    <span>Total Fare</span>
+                    <strong>₹<span id="totalFare">0</span></strong>
+                </div>
+
+            </div>
+
+            <button
+                    type="button"
+                    class="continue-btn"
+                    onclick="createBooking()">
+
+                Continue to Payment
+
+            </button>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    let passengerNumber = 0;
+
+    let passengers = [];
+
+
+    // =========================
+    // LOAD TRAIN DATA
+    // =========================
+
+    const trainData =
+        JSON.parse(
+            localStorage.getItem("selectedTrain")
+        );
+
+    const fromStation =
+        localStorage.getItem("from") || "";
+
+    const toStation =
+        localStorage.getItem("to") || "";
+
+    const journeyDate =
+        localStorage.getItem("journeyDate") || "";
+
+    const classType =
+        localStorage.getItem("classType") || "SL";
+
+
+    // =========================
+    // DISPLAY TRAIN
+    // =========================
+
+    if (trainData) {
+
+        document.getElementById("trainNumber").textContent =
+            trainData.trainNumber || "-";
+
+        document.getElementById("trainName").textContent =
+            trainData.trainName || "-";
+
+        document.getElementById("departureTime").textContent =
+            trainData.departureTime || "-";
+
+        document.getElementById("arrivalTime").textContent =
+            trainData.arrivalTime || "-";
+
+    }
+
+    document.getElementById("fromStation").textContent =
+        fromStation || (trainData ? trainData.source : "-");
+
+    document.getElementById("toStation").textContent =
+        toStation || (trainData ? trainData.destination : "-");
+
+    document.getElementById("journeyDate").textContent =
+        journeyDate || "-";
+
+    document.getElementById("classType").textContent =
+        classType;
+
+
+    // =========================
+    // GET FARE
+    // =========================
+
+    function getFare() {
+
+        if (!trainData) {
+            return 0;
+        }
+
+        switch (classType.toUpperCase()) {
+
+            case "SL":
+                return trainData.sleeperFare || 0;
+
+            case "3A":
+            case "AC3":
+                return trainData.ac3Fare || 0;
+
+            case "2A":
+            case "AC2":
+                return trainData.ac2Fare || 0;
+
+            case "1A":
+            case "AC1":
+                return trainData.ac1Fare || 0;
+
+            default:
+                return trainData.sleeperFare || 0;
+        }
+    }
+
+
+    // =========================
+    // ADD PASSENGER
+    // =========================
+
+    function addPassenger() {
+
+        if (passengerNumber >= 6) {
+
+            alert(
+                "Maximum 6 passengers can be added."
+            );
+
+            return;
+        }
+
+        passengerNumber++;
+
+        const container =
+            document.getElementById(
+                "passengerContainer"
+            );
+
+        const passengerDiv =
+            document.createElement("div");
+
+        passengerDiv.className =
+            "passenger";
+
+        passengerDiv.id =
+            "passenger-" + passengerNumber;
+
+        passengerDiv.innerHTML = `
+
+        <div class="passenger-header">
+
+            <h3>
+                Passenger ${passengerNumber}
+            </h3>
+
+            ${
+            passengerNumber > 1
+                ? `
+                <button
+                    type="button"
+                    class="remove-btn"
+                    onclick="removePassenger(${passengerNumber})">
+
+                    Remove
+
+                </button>
+                `
+                : ""
+        }
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                id="name-${passengerNumber}"
+                placeholder="Passenger name">
+
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>Age</label>
+
+                <input
+                    type="number"
+                    id="age-${passengerNumber}"
+                    min="1"
+                    max="120"
+                    placeholder="Age">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Gender</label>
+
+                <select id="gender-${passengerNumber}">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="MALE">
+                        Male
+                    </option>
+
+                    <option value="FEMALE">
+                        Female
+                    </option>
+
+                    <option value="OTHER">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+    `;
+
+        container.appendChild(passengerDiv);
+
+        updateFare();
+    }
+
+
+    // =========================
+    // REMOVE PASSENGER
+    // =========================
+
+    function removePassenger(number) {
+
+        const element =
+            document.getElementById(
+                "passenger-" + number
+            );
+
+        if (element) {
+            element.remove();
+        }
+
+        updatePassengerCount();
+        updateFare();
+    }
+
+
+    // =========================
+    // COUNT PASSENGERS
+    // =========================
+
+    function updatePassengerCount() {
+
+        const count =
+            document.querySelectorAll(
+                ".passenger"
+            ).length;
+
+        document.getElementById(
+            "passengerCount"
+        ).textContent = count;
+    }
+
+
+    // =========================
+    // UPDATE FARE
+    // =========================
+
+    function updateFare() {
+
+        const count =
+            document.querySelectorAll(
+                ".passenger"
+            ).length;
+
+        const fare =
+            getFare();
+
+        document.getElementById(
+            "farePerPassenger"
+        ).textContent = fare;
+
+        document.getElementById(
+            "totalFare"
+        ).textContent =
+            fare * count;
+
+        document.getElementById(
+            "passengerCount"
+        ).textContent = count;
+    }
+
+
+    // =========================
+    // COLLECT PASSENGERS
+    // =========================
+
+    function collectPassengers() {
+
+        const elements =
+            document.querySelectorAll(
+                ".passenger"
+            );
+
+        const result = [];
+
+        for (let i = 0; i < elements.length; i++) {
+
+            const number =
+                elements[i].id.split("-")[1];
+
+            const name =
+                document.getElementById(
+                    "name-" + number
+                ).value.trim();
+
+            const age =
+                document.getElementById(
+                    "age-" + number
+                ).value;
+
+            const gender =
+                document.getElementById(
+                    "gender-" + number
+                ).value;
+
+
+            if (!name || !age || !gender) {
+
+                alert(
+                    "Please complete Passenger " +
+                    number +
+                    " details."
+                );
+
+                return null;
+            }
+
+
+            result.push({
+                name: name,
+                age: parseInt(age),
+                gender: gender
+            });
+        }
+
+        return result;
+    }
+
+
+    // =========================
+    // CREATE BOOKING
+    // =========================
+
+    async function createBooking() {
+
+        const passengerList =
+            collectPassengers();
+
+        if (!passengerList) {
+            return;
+        }
+
+        if (!trainData || !trainData.id) {
+
+            alert(
+                "Train information is missing."
+            );
+
+            return;
+        }
+
+
+        const userId =
+            localStorage.getItem("userId");
+
+
+        if (!userId) {
+
+            alert(
+                "Please login before booking."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        const totalFare =
+            getFare() * passengerList.length;
+
+
+        /*
+         * Current Booking entity supports
+         * User + Train + journey details.
+         *
+         * Passenger records can be saved
+         * separately after booking creation.
+         */
+
+        const bookingData = {
+
+            pnr: null,
+
+            user: {
+                id: Number(userId)
+            },
+
+            train: {
+                id: Number(trainData.id)
+            },
+
+            journeyDate: journeyDate,
+
+            fromStation: fromStation ||
+                trainData.source,
+
+            toStation: toStation ||
+                trainData.destination,
+
+            classType: classType,
+
+            totalFare: totalFare,
+
+            bookingStatus: "PENDING",
+
+            bookingTime: null
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/bookings",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                bookingData
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.text();
+
+                throw new Error(
+                    error ||
+                    "Booking failed"
+                );
+            }
+
+
+            const booking =
+                await response.json();
+
+
+            // Save booking information
+
+            localStorage.setItem(
+                "booking",
+                JSON.stringify(booking)
+            );
+
+            localStorage.setItem(
+                "passengers",
+                JSON.stringify(passengerList)
+            );
+
+
+            // Go to payment
+
+            window.location.href =
+                "payment.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Booking failed: " +
+                error.message
+            );
+        }
+    }
+
+
+    // =========================
+    // INITIAL PASSENGER
+    // =========================
+
+    addPassenger();
+
+</script>
+
 </body>
 </html>
+
+Booking page ka flow
+
+search-train.html
+↓
+Select Train
+↓
+booking.html
+↓
+Passenger Details
+↓
+Fare Calculate
+↓
+POST /api/bookings
+↓
+BookingService
+↓
+BookingRepository
+↓
+MySQL
+↓
+PNR Generate
+↓
+payment.html
+
+Ek important point: abhi tumhare backend mein "Booking" create hone par "Passenger" automatically save nahi hota. Isliye next step mein "PassengerController + PassengerService" banana zaroori hai, taaki booking ke passengers bhi MySQL mein save hon.

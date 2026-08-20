@@ -1,10 +1,941 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register - IRCTC Railway Booking</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+        }
+
+        .register-page {
+
+            min-height: calc(100vh - 90px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 40px 20px;
+        }
+
+
+        .register-card {
+
+            width: 100%;
+
+            max-width: 520px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                    0 10px 35px rgba(0,0,0,0.10);
+        }
+
+
+        .register-header {
+
+            text-align: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .register-icon {
+
+            width: 70px;
+
+            height: 70px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #e8eef7;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 34px;
+        }
+
+
+        .register-header h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 28px;
+        }
+
+
+        .register-header p {
+
+            color: #777;
+
+            margin: 0;
+
+            font-size: 14px;
+        }
+
+
+        /* ================= FORM ================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 5px;
+        }
+
+
+        .form-group.full {
+
+            grid-column: 1 / -1;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .form-group input {
+
+            width: 100%;
+
+            height: 48px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 7px;
+
+            padding: 0 13px;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+
+        .form-group input:focus {
+
+            border-color: #315b9b;
+
+            box-shadow:
+                    0 0 0 3px rgba(49,91,155,0.10);
+        }
+
+
+        .password-wrapper {
+
+            position: relative;
+        }
+
+
+        .password-wrapper input {
+
+            padding-right: 75px;
+        }
+
+
+        .show-password {
+
+            position: absolute;
+
+            right: 10px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            color: #315b9b;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        /* ================= BUTTON ================= */
+
+        .register-btn {
+
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 22px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #315b9b;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .register-btn:hover {
+
+            opacity: 0.9;
+        }
+
+
+        .register-btn:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+
+            display: none;
+
+            padding: 12px;
+
+            margin-bottom: 18px;
+
+            border-radius: 7px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+
+        .message.error {
+
+            display: block;
+
+            background: #ffe5e5;
+
+            color: #c62828;
+        }
+
+
+        .message.success {
+
+            display: block;
+
+            background: #e3f6e8;
+
+            color: #187a35;
+        }
+
+
+        .login-link {
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+
+        .login-link a {
+
+            color: #315b9b;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .login-link a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        .back-home {
+
+            text-align: center;
+
+            margin-top: 15px;
+        }
+
+
+        .back-home a {
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-size: 13px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+
+                flex-direction: column;
+
+                gap: 12px;
+
+                padding: 15px;
+            }
+
+            .navbar nav {
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+            .navbar nav a {
+
+                font-size: 13px;
+
+                padding: 8px 10px;
+            }
+
+            .register-card {
+
+                padding: 25px 20px;
+            }
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+
+                grid-column: auto;
+            }
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-$END$
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+
+        <span>IRCTC</span>
+
+        <small>
+            Railway Booking
+        </small>
+
+    </div>
+
+
+    <nav>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="search-train.html">
+            Search Train
+        </a>
+
+        <a href="login.html">
+            Login
+        </a>
+
+        <a href="register.html"
+           class="active">
+
+            Register
+
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= REGISTER ================= -->
+
+<main class="register-page">
+
+
+    <div class="register-card">
+
+
+        <div class="register-header">
+
+            <div class="register-icon">
+                👤
+            </div>
+
+            <h1>
+                Create Account
+            </h1>
+
+            <p>
+                Register to book your railway tickets
+            </p>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div id="message"
+             class="message">
+        </div>
+
+
+        <!-- REGISTER FORM -->
+
+        <form id="registerForm">
+
+
+            <div class="form-grid">
+
+
+                <!-- NAME -->
+
+                <div class="form-group full">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                            type="text"
+                            id="name"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter email"
+                            autocomplete="email"
+                            required>
+
+                </div>
+
+
+                <!-- MOBILE -->
+
+                <div class="form-group">
+
+                    <label for="mobile">
+                        Mobile Number
+                    </label>
+
+                    <input
+                            type="tel"
+                            id="mobile"
+                            placeholder="10 digit mobile"
+                            maxlength="10"
+                            autocomplete="tel"
+                            required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                                type="password"
+                                id="password"
+                                placeholder="Create password"
+                                autocomplete="new-password"
+                                required>
+
+                        <button
+                                type="button"
+                                class="show-password"
+                                onclick="togglePassword(
+                                'password',
+                                this
+                            )">
+
+                            Show
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Confirm password"
+                                autocomplete="new-password"
+                                required>
+
+                        <button
+                                type="button"
+                                class="show-password"
+                                onclick="togglePassword(
+                                'confirmPassword',
+                                this
+                            )">
+
+                            Show
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                    type="submit"
+                    id="registerBtn"
+                    class="register-btn">
+
+                Create Account
+
+            </button>
+
+
+        </form>
+
+
+        <!-- LOGIN -->
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+
+        <div class="back-home">
+
+            <a href="index.html">
+                ← Back to Home
+            </a>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+    // =========================
+    // SHOW / HIDE PASSWORD
+    // =========================
+
+    function togglePassword(
+        inputId,
+        button
+    ) {
+
+        const input =
+            document.getElementById(
+                inputId
+            );
+
+
+        if (input.type === "password") {
+
+            input.type = "text";
+
+            button.textContent =
+                "Hide";
+
+        } else {
+
+            input.type = "password";
+
+            button.textContent =
+                "Show";
+        }
+    }
+
+
+    // =========================
+    // MESSAGE
+    // =========================
+
+    function showMessage(
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                "message"
+            );
+
+        element.textContent =
+            message;
+
+        element.className =
+            "message " + type;
+    }
+
+
+    // =========================
+    // REGISTER
+    // =========================
+
+    document
+        .getElementById("registerForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const mobile =
+                    document
+                        .getElementById("mobile")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                const confirmPassword =
+                    document
+                        .getElementById(
+                            "confirmPassword"
+                        )
+                        .value;
+
+
+                // =========================
+                // VALIDATION
+                // =========================
+
+                if (!name ||
+                    !email ||
+                    !mobile ||
+                    !password ||
+                    !confirmPassword) {
+
+                    showMessage(
+                        "Please fill all fields.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // Mobile validation
+
+                if (!/^[0-9]{10}$/.test(mobile)) {
+
+                    showMessage(
+                        "Please enter a valid 10 digit mobile number.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // Password validation
+
+                if (password.length < 6) {
+
+                    showMessage(
+                        "Password must contain at least 6 characters.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // Confirm password
+
+                if (password !== confirmPassword) {
+
+                    showMessage(
+                        "Passwords do not match.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const registerBtn =
+                    document.getElementById(
+                        "registerBtn"
+                    );
+
+
+                registerBtn.disabled = true;
+
+                registerBtn.textContent =
+                    "Creating Account...";
+
+
+                try {
+
+
+                    // =========================
+                    // API CALL
+                    // =========================
+
+                    const response =
+                        await fetch(
+                            "/api/auth/register",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        name: name,
+
+                                        email: email,
+
+                                        mobile: mobile,
+
+                                        password: password
+
+                                    })
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    let data;
+
+                    try {
+
+                        data =
+                            JSON.parse(text);
+
+                    } catch {
+
+                        data = {
+                            message: text
+                        };
+                    }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            "Registration failed."
+                        );
+                    }
+
+
+                    // =========================
+                    // SUCCESS
+                    // =========================
+
+                    showMessage(
+                        "Registration successful! Redirecting to login...",
+                        "success"
+                    );
+
+
+                    document
+                        .getElementById(
+                            "registerForm"
+                        )
+                        .reset();
+
+
+                    setTimeout(
+                        function() {
+
+                            window.location.href =
+                                "login.html";
+
+                        },
+                        1200
+                    );
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+
+                    showMessage(
+                        error.message ||
+                        "Registration failed. Please try again.",
+                        "error"
+                    );
+
+
+                    registerBtn.disabled =
+                        false;
+
+                    registerBtn.textContent =
+                        "Create Account";
+                }
+
+            }
+        );
+
+</script>
+
 </body>
+
 </html>
+
+Register ka complete flow
+
+register.html
+↓
+Name + Email + Mobile + Password
+↓
+POST /api/auth/register
+↓
+AuthController
+↓
+AuthService
+↓
+Email/Mobile check
+↓
+PasswordEncoder
+↓
+UserRepository
+↓
+users table
+↓
+Registration Success
+↓
+login.html
+
+Important: tumhare "AuthService" mein "passwordEncoder.encode()" laga hua hai, isliye "PasswordEncoder" bean configured hona zaroori hai.

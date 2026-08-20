@@ -1,10 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trains | Railway Booking</title>
+
+    <!-- Common CSS -->
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <!-- Train Page CSS -->
+    <link rel="stylesheet"
+          href="css/trains.css">
+
 </head>
+
+
 <body>
-$END$
+
+
+<!-- =========================================
+     NAVBAR
+========================================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+
+        <strong>
+            🚆 Railway Booking
+        </strong>
+
+        <small>
+            Train Reservation System
+        </small>
+
+    </div>
+
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="search-train.html">
+            Search Train
+        </a>
+
+        <a href="trains.html"
+           class="active">
+            Trains
+        </a>
+
+        <a href="stations.html">
+            Stations
+        </a>
+
+        <a href="schedule.html">
+            Schedule
+        </a>
+
+        <a href="my-bookings.html">
+            My Bookings
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="trains-container">
+
+
+    <!-- PAGE TITLE -->
+
+    <section class="page-title">
+
+        <h1>
+            Available Trains
+        </h1>
+
+        <p>
+            View and search all available
+            trains in the railway system.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================
+         SEARCH
+    ====================================== -->
+
+    <section class="search-card">
+
+        <input
+                type="text"
+                id="trainSearch"
+                class="search-input"
+                placeholder="Search by train name, train number, source or destination...">
+
+    </section>
+
+
+    <!-- =====================================
+         MESSAGE
+    ====================================== -->
+
+    <div
+            id="trainMessage"
+            class="train-message"
+            style="display: none;">
+    </div>
+
+
+    <!-- =====================================
+         TRAIN RESULTS
+    ====================================== -->
+
+    <section
+            id="trainsGrid"
+            class="trains-grid">
+
+        <!-- JS will load trains here -->
+
+        <div class="loading">
+
+            <div style="font-size: 40px;">
+                🚆
+            </div>
+
+            <p>
+                Loading trains...
+            </p>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script src="js/api.js"></script>
+
+<script src="js/trains.js"></script>
+
+
 </body>
+
 </html>

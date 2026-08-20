@@ -1,10 +1,847 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - IRCTC</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            background: #f4f7fb;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .welcome h1 {
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #666;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-icon {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .dashboard-card p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        .search-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #d5d9df;
+            border-radius: 7px;
+            padding: 0 12px;
+            font-size: 14px;
+        }
+
+        .search-button {
+            height: 46px;
+            padding: 0 25px;
+            border: none;
+            border-radius: 7px;
+            background: #315b9b;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .recent {
+            margin-top: 30px;
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        .booking-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .booking-row:last-child {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .confirmed {
+            background: #e3f6e8;
+            color: #187a35;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .cancelled {
+            background: #ffe5e5;
+            color: #c62828;
+        }
+
+        .logout-btn {
+            background: #ffe5e5 !important;
+            color: #c62828 !important;
+        }
+
+        @media (max-width: 900px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-$END$
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        <span>IRCTC</span>
+        <small>Railway Booking</small>
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html" class="active">
+            Dashboard
+        </a>
+
+        <a href="search-train.html">
+            Search Train
+        </a>
+
+        <a href="my-bookings.html">
+            My Bookings
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+        <a href="#" class="logout-btn" onclick="logout()">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<main class="dashboard">
+
+    <!-- WELCOME -->
+
+    <section class="welcome">
+
+        <h1>
+            Welcome, <span id="userName">User</span> 👋
+        </h1>
+
+        <p>
+            Manage your railway journey from your dashboard.
+        </p>
+
+    </section>
+
+
+    <!-- DASHBOARD CARDS -->
+
+    <section class="dashboard-grid">
+
+        <div
+                class="dashboard-card"
+                onclick="goToSearch()">
+
+            <div class="dashboard-icon">
+                🚆
+            </div>
+
+            <h3>Search Train</h3>
+
+            <p>
+                Search trains between stations
+                and check availability.
+            </p>
+
+        </div>
+
+
+        <div
+                class="dashboard-card"
+                onclick="goToBookings()">
+
+            <div class="dashboard-icon">
+                🎫
+            </div>
+
+            <h3>My Bookings</h3>
+
+            <p>
+                View your booked and cancelled
+                tickets.
+            </p>
+
+        </div>
+
+
+        <div
+                class="dashboard-card"
+                onclick="goToProfile()">
+
+            <div class="dashboard-icon">
+                👤
+            </div>
+
+            <h3>My Profile</h3>
+
+            <p>
+                View and update your account details.
+            </p>
+
+        </div>
+
+
+        <div
+                class="dashboard-card"
+                onclick="goToPayment()">
+
+            <div class="dashboard-icon">
+                💳
+            </div>
+
+            <h3>Payments</h3>
+
+            <p>
+                View your payment and transaction
+                information.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <section class="search-section">
+
+        <h2>
+            🔎 Search Your Train
+        </h2>
+
+        <div class="search-form">
+
+            <div class="form-group">
+
+                <label for="from">
+                    From
+                </label>
+
+                <input
+                        type="text"
+                        id="from"
+                        placeholder="Departure station">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="to">
+                    To
+                </label>
+
+                <input
+                        type="text"
+                        id="to"
+                        placeholder="Destination station">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="journeyDate">
+                    Journey Date
+                </label>
+
+                <input
+                        type="date"
+                        id="journeyDate">
+
+            </div>
+
+
+            <button
+                    class="search-button"
+                    onclick="searchTrain()">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RECENT BOOKINGS ================= -->
+
+    <section class="recent">
+
+        <h2>
+            Recent Bookings
+        </h2>
+
+        <div id="recentBookings">
+
+            <p style="color:#777; margin-top:15px;">
+                Loading bookings...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+    const userId =
+        localStorage.getItem("userId");
+
+
+    // =========================
+    // CHECK LOGIN
+    // =========================
+
+    if (!userId) {
+
+        window.location.href =
+            "login.html";
+    }
+
+
+    // =========================
+    // LOAD USER
+    // =========================
+
+    async function loadUser() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${userId}`
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load user"
+                );
+            }
+
+            const user =
+                await response.json();
+
+            document.getElementById(
+                "userName"
+            ).textContent =
+                user.name || "User";
+
+            localStorage.setItem(
+                "userName",
+                user.name || "User"
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            const savedName =
+                localStorage.getItem(
+                    "userName"
+                );
+
+            if (savedName) {
+
+                document.getElementById(
+                    "userName"
+                ).textContent =
+                    savedName;
+            }
+        }
+    }
+
+
+    // =========================
+    // LOAD RECENT BOOKINGS
+    // =========================
+
+    async function loadBookings() {
+
+        const container =
+            document.getElementById(
+                "recentBookings"
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/bookings/user/${userId}`
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load bookings"
+                );
+            }
+
+            const bookings =
+                await response.json();
+
+
+            if (!bookings ||
+                bookings.length === 0) {
+
+                container.innerHTML = `
+                <p style="color:#777; margin-top:15px;">
+                    No bookings found.
+                </p>
+            `;
+
+                return;
+            }
+
+
+            container.innerHTML = "";
+
+
+            bookings
+                .slice(0, 5)
+                .forEach(booking => {
+
+                    let statusClass =
+                        "pending";
+
+                    if (
+                        booking.bookingStatus ===
+                        "CONFIRMED"
+                    ) {
+                        statusClass =
+                            "confirmed";
+                    }
+
+                    if (
+                        booking.bookingStatus ===
+                        "CANCELLED"
+                    ) {
+                        statusClass =
+                            "cancelled";
+                    }
+
+
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+                    row.className =
+                        "booking-row";
+
+
+                    row.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            PNR:
+                            ${booking.pnr || "Pending"}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ${
+                        booking.fromStation
+                        || "-"
+                    }
+
+                            →
+
+                            ${
+                        booking.toStation
+                        || "-"
+                    }
+
+                            |
+                            ${
+                        booking.journeyDate
+                        || "-"
+                    }
+                        </small>
+
+                    </div>
+
+
+                    <span
+                        class="status ${statusClass}">
+
+                        ${
+                        booking.bookingStatus
+                        || "PENDING"
+                    }
+
+                    </span>
+
+                `;
+
+
+                    container.appendChild(row);
+
+                });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            container.innerHTML = `
+            <p style="color:#c62828;">
+                Unable to load bookings.
+            </p>
+        `;
+        }
+    }
+
+
+    // =========================
+    // SEARCH TRAIN
+    // =========================
+
+    function searchTrain() {
+
+        const from =
+            document.getElementById(
+                "from"
+            ).value.trim();
+
+        const to =
+            document.getElementById(
+                "to"
+            ).value.trim();
+
+        const journeyDate =
+            document.getElementById(
+                "journeyDate"
+            ).value;
+
+
+        if (!from || !to || !journeyDate) {
+
+            alert(
+                "Please enter From, To and Journey Date."
+            );
+
+            return;
+        }
+
+
+        if (
+            from.toLowerCase() ===
+            to.toLowerCase()
+        ) {
+
+            alert(
+                "From and To stations cannot be same."
+            );
+
+            return;
+        }
+
+
+        localStorage.setItem(
+            "from",
+            from
+        );
+
+        localStorage.setItem(
+            "to",
+            to
+        );
+
+        localStorage.setItem(
+            "journeyDate",
+            journeyDate
+        );
+
+
+        window.location.href =
+            "search-train.html";
+    }
+
+
+    // =========================
+    // NAVIGATION
+    // =========================
+
+    function goToSearch() {
+
+        window.location.href =
+            "search-train.html";
+    }
+
+
+    function goToBookings() {
+
+        window.location.href =
+            "my-bookings.html";
+    }
+
+
+    function goToProfile() {
+
+        window.location.href =
+            "profile.html";
+    }
+
+
+    function goToPayment() {
+
+        const booking =
+            localStorage.getItem(
+                "booking"
+            );
+
+        if (booking) {
+
+            window.location.href =
+                "payment.html";
+
+        } else {
+
+            alert(
+                "No active payment found."
+            );
+        }
+    }
+
+
+    // =========================
+    // LOGOUT
+    // =========================
+
+    function logout() {
+
+        localStorage.removeItem(
+            "userId"
+        );
+
+        localStorage.removeItem(
+            "userName"
+        );
+
+        localStorage.removeItem(
+            "booking"
+        );
+
+        localStorage.removeItem(
+            "passengers"
+        );
+
+        window.location.href =
+            "index.html";
+    }
+
+
+    // =========================
+    // INITIAL LOAD
+    // =========================
+
+    loadUser();
+    loadBookings();
+
+
+    // Set minimum journey date
+
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    document
+        .getElementById("journeyDate")
+        .setAttribute(
+            "min",
+            today
+        );
+
+</script>
+
 </body>
 </html>
+
+Dashboard ka flow
+
+Login
+↓
+dashboard.html
+│
+├── Search Train
+│       ↓
+│   search-train.html
+│
+├── My Bookings
+│       ↓
+│   my-bookings.html
+│
+├── My Profile
+│       ↓
+│   profile.html
+│
+└── Payments
+↓
+payment.html
+
+Dashboard backend se bhi connected hai:
+
+dashboard.html
+↓
+GET /api/users/{id}
+↓
+UserController
+↓
+UserService
+↓
+UserRepository
+↓
+MySQL
+
+Aur recent bookings:
+
+dashboard.html
+↓
+GET /api/bookings/user/{userId}
+↓
+BookingController
+↓
+BookingService
+↓
+BookingRepository
+↓
+MySQL
+
+Note: Login ke baad "localStorage" mein "userId" save hona zaroori hai, warna dashboard user ko "login.html" par redirect karega.
