@@ -12,6 +12,12 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Transient
+    private Long userId;
+
+    @Transient
+    private Long trainId;
+
     // PNR Number
     @Column(unique = true, nullable = false)
     private String pnr;
@@ -49,6 +55,22 @@ public class Booking {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId != null ? userId : (user != null ? user.getId() : null);
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getTrainId() {
+        return trainId != null ? trainId : (train != null ? train.getId() : null);
+    }
+
+    public void setTrainId(Long trainId) {
+        this.trainId = trainId;
     }
 
     public String getPnr() {

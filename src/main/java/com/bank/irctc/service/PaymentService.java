@@ -26,20 +26,24 @@ public class PaymentService {
     // =========================
     public Payment createPayment(Payment payment) {
 
-        if (payment.getBooking() == null ||
-                payment.getBooking().getId() == null) {
+        Long bookingId = payment.getBookingId();
 
+        if (payment.getBooking() != null && payment.getBooking().getId() != null) {
+            bookingId = payment.getBooking().getId();
+        }
+
+        if (bookingId == null) {
             throw new RuntimeException(
                     "Booking ID is required"
             );
         }
 
-        Long bookingId = payment.getBooking().getId();
+        final Long resolvedBookingId = bookingId;
 
-        Booking booking = bookingRepository.findById(bookingId)
+        Booking booking = bookingRepository.findById(resolvedBookingId)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Booking not found with ID: " + bookingId
+                                "Booking not found with ID: " + resolvedBookingId
                         )
                 );
 
@@ -52,6 +56,7 @@ public class PaymentService {
 
         // Set booking
         payment.setBooking(booking);
+        payment.setBookingId(bookingId);
 
         // Generate transaction ID
         String transactionId =
@@ -77,6 +82,10 @@ public class PaymentService {
         booking.setBookingStatus("CONFIRMED");
 
         bookingRepository.save(booking);
+
+        if (payment.getAmount() == null || payment.getAmount() <= 0) {
+            payment.setAmount(booking.getTotalFare());
+        }
 
         return paymentRepository.save(payment);
     }

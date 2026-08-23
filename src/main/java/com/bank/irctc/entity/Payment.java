@@ -11,6 +11,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Transient
+    private Long bookingId;
+
     // Payment belongs to a booking
     @OneToOne
     @JoinColumn(name = "booking_id", nullable = false)
@@ -37,6 +40,14 @@ public class Payment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getBookingId() {
+        return bookingId != null ? bookingId : (booking != null ? booking.getId() : null);
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 
     public Booking getBooking() {

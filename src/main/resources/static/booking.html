@@ -686,16 +686,6 @@
             return;
         }
 
-        if (!trainData || !trainData.id) {
-
-            alert(
-                "Train information is missing."
-            );
-
-            return;
-        }
-
-
         const userId =
             localStorage.getItem("userId");
 
@@ -712,30 +702,39 @@
             return;
         }
 
+        let resolvedTrainId = Number(trainData?.id || 0);
+        if (!resolvedTrainId && trainData?.trainNumber) {
+            try {
+                const trainList = await fetch('/api/trains').then(response => response.ok ? response.json() : []);
+                const match = trainList.find(train => String(train.trainNumber) === String(trainData.trainNumber));
+                if (match) {
+                    resolvedTrainId = Number(match.id);
+                }
+            } catch (error) {
+                console.warn('Unable to resolve train id:', error);
+            }
+        }
+
+        if (!trainData || !resolvedTrainId) {
+
+            alert(
+                "Train information is missing."
+            );
+
+            return;
+        }
+
 
         const totalFare =
             getFare() * passengerList.length;
 
 
-        /*
-         * Current Booking entity supports
-         * User + Train + journey details.
-         *
-         * Passenger records can be saved
-         * separately after booking creation.
-         */
-
         const bookingData = {
 
             pnr: null,
 
-            user: {
-                id: Number(userId)
-            },
-
-            train: {
-                id: Number(trainData.id)
-            },
+            userId: Number(userId),
+            trainId: resolvedTrainId,
 
             journeyDate: journeyDate,
 

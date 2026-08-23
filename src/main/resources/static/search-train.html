@@ -533,6 +533,7 @@
 
             card.className =
                 "train-card";
+            card.dataset.trainId = train.id ?? "";
 
 
             card.innerHTML = `
@@ -677,22 +678,26 @@
 
                 ${createClassButton(
                 "SL",
-                train.sleeperFare
+                train.sleeperFare,
+                train.id
             )}
-
+ 
                 ${createClassButton(
                 "3A",
-                train.ac3Fare
+                train.ac3Fare,
+                train.id
             )}
-
+ 
                 ${createClassButton(
                 "2A",
-                train.ac2Fare
+                train.ac2Fare,
+                train.id
             )}
-
+ 
                 ${createClassButton(
                 "1A",
-                train.ac1Fare
+                train.ac1Fare,
+                train.id
             )}
 
             </div>
@@ -711,7 +716,8 @@
 
     function createClassButton(
         classType,
-        fare
+        fare,
+        trainId
     ) {
 
         if (
@@ -724,7 +730,7 @@
 
 
         return `
-
+ 
         <button
             class="class-btn"
             onclick='selectTrain(
@@ -734,6 +740,7 @@
                 ${JSON.stringify(
             fare
         )},
+                ${JSON.stringify(trainId)},
                 this
             )'>
 
@@ -764,6 +771,7 @@
     function selectTrain(
         classType,
         fare,
+        trainId,
         button
     ) {
 
@@ -771,6 +779,9 @@
             button.closest(
                 ".train-card"
             );
+
+        const resolvedTrainId =
+            trainId || card?.dataset?.trainId || "";
 
 
         /*
@@ -854,15 +865,7 @@
 
         const selectedTrain = {
 
-            /*
-             * IMPORTANT:
-             *
-             * id is not available from
-             * the rendered card.
-             *
-             * We search again from the API
-             * before booking.
-             */
+            id: resolvedTrainId ? Number(resolvedTrainId) : null,
 
             trainNumber:
             trainNumber,
