@@ -25,4 +25,11 @@ public interface TrainScheduleRepository
 
     // Status ke according schedules
     List<TrainSchedule> findByStatus(String status);
+
+    // Search by Source, Destination and Date
+    List<TrainSchedule> findByTrainSourceIgnoreCaseAndTrainDestinationIgnoreCaseAndJourneyDate(
+            String source,
+            String destination,
+            LocalDate journeyDate
+    );
 }

@@ -30,14 +30,23 @@ public class UserController {
     }
 
     // =========================
-    // GET USER BY ID
+    // GET USER BY ID (PROFILE)
     // =========================
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
             @PathVariable Long id) {
 
         User user = userService.getUserById(id);
+        // Hide password for security
+        user.setPassword(null);
 
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.getUserByEmail(email);
+        user.setPassword(null);
         return ResponseEntity.ok(user);
     }
 

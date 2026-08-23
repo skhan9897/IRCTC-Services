@@ -70,6 +70,20 @@ public class TrainScheduleController {
     }
 
     // =========================
+    // SEARCH SCHEDULES
+    // =========================
+    @GetMapping("/search")
+    public ResponseEntity<List<TrainSchedule>> searchSchedules(
+            @RequestParam String from,
+            @RequestParam String to,
+            @RequestParam LocalDate date) {
+
+        return ResponseEntity.ok(
+                scheduleService.searchSchedules(from, to, date)
+        );
+    }
+
+    // =========================
     // ADD SCHEDULE
     // =========================
     @PostMapping("/train/{trainId}")

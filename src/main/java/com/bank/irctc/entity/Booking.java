@@ -3,6 +3,8 @@ package com.bank.irctc.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")
@@ -46,6 +48,9 @@ public class Booking {
 
     private LocalDateTime bookingTime;
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Passenger> passengers = new ArrayList<>();
+
     public Booking() {
     }
 
@@ -55,6 +60,19 @@ public class Booking {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<Passenger> passengers) {
+        this.passengers = passengers;
+        if (passengers != null) {
+            for (Passenger p : passengers) {
+                p.setBooking(this);
+            }
+        }
     }
 
     public Long getUserId() {

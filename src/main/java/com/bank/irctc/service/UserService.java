@@ -39,6 +39,11 @@ public class UserService {
                 );
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
+
     // =========================
     // UPDATE USER
     // =========================

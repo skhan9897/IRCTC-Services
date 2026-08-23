@@ -1,12 +1,9 @@
 package com.bank.irctc.service;
 
-import com.bank.irctc.entity.Booking;
-import com.bank.irctc.entity.Train;
-import com.bank.irctc.entity.User;
-import com.bank.irctc.repository.BookingRepository;
-import com.bank.irctc.repository.TrainRepository;
-import com.bank.irctc.repository.UserRepository;
+import com.bank.irctc.entity.*;
+import com.bank.irctc.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,18 +15,22 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final TrainRepository trainRepository;
+    private final TrainScheduleRepository scheduleRepository;
 
     public BookingService(BookingRepository bookingRepository,
                          UserRepository userRepository,
-                         TrainRepository trainRepository) {
+                         TrainRepository trainRepository,
+                         TrainScheduleRepository scheduleRepository) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.trainRepository = trainRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     // =========================
     // CREATE BOOKING
     // =========================
+    @Transactional
     public Booking createBooking(Booking booking) {
 
         if (booking == null) {
@@ -59,12 +60,54 @@ public class BookingService {
             throw new RuntimeException("Train is required for booking");
         }
 
+        Train train = booking.getTrain();
+
         if (booking.getFromStation() == null || booking.getFromStation().isBlank()) {
-            booking.setFromStation(booking.getTrain().getSource());
+            booking.setFromStation(train.getSource());
         }
 
         if (booking.getToStation() == null || booking.getToStation().isBlank()) {
-            booking.setToStation(booking.getTrain().getDestination());
+            booking.setToStation(train.getDestination());
+        }
+
+        // Calculate Total Fare
+        if (booking.getClassType() == null) {
+            booking.setClassType("SLEEPER");
+        }
+
+        double baseFare = 0.0;
+        switch (booking.getClassType().toUpperCase()) {
+            case "AC1": baseFare = train.getAc1Fare() != null ? train.getAc1Fare() : 1000.0; break;
+            case "AC2": baseFare = train.getAc2Fare() != null ? train.getAc2Fare() : 800.0; break;
+            case "AC3": baseFare = train.getAc3Fare() != null ? train.getAc3Fare() : 600.0; break;
+            default: baseFare = train.getSleeperFare() != null ? train.getSleeperFare() : 300.0; break;
+        }
+
+        int passengerCount = booking.getPassengers() != null ? booking.getPassengers().size() : 1;
+        if (passengerCount == 0) passengerCount = 1;
+
+        booking.setTotalFare(baseFare * passengerCount);
+
+        // Update Seats in Schedule if journey date matches
+        if (booking.getJourneyDate() != null) {
+            List<TrainSchedule> schedules = scheduleRepository.findByTrainIdAndJourneyDate(train.getId(), booking.getJourneyDate());
+            if (!schedules.isEmpty()) {
+                TrainSchedule schedule = schedules.get(0);
+                if (schedule.getAvailableSeats() < passengerCount) {
+                    throw new RuntimeException("Not enough seats available for this date");
+                }
+                schedule.setAvailableSeats(schedule.getAvailableSeats() - passengerCount);
+                scheduleRepository.save(schedule);
+            } else {
+                // Fallback to Train entity seats if no schedule found
+                if (train.getAvailableSeats() != null && train.getAvailableSeats() < passengerCount) {
+                     throw new RuntimeException("Not enough seats available");
+                }
+                if (train.getAvailableSeats() != null) {
+                    train.setAvailableSeats(train.getAvailableSeats() - passengerCount);
+                    trainRepository.save(train);
+                }
+            }
         }
 
         // Generate unique PNR
@@ -80,6 +123,20 @@ public class BookingService {
 
         // Booking time
         booking.setBookingTime(LocalDateTime.now());
+
+        // Ensure passengers are linked and assign dummy seats
+        if (booking.getPassengers() != null) {
+            int seatCounter = 1;
+            for (Passenger p : booking.getPassengers()) {
+                p.setBooking(booking);
+                if (p.getSeatNumber() == null || p.getSeatNumber().isBlank()) {
+                    p.setSeatNumber("S" + seatCounter++);
+                }
+                if (p.getCoach() == null || p.getCoach().isBlank()) {
+                    p.setCoach("S1");
+                }
+            }
+        }
 
         return bookingRepository.save(booking);
     }

@@ -1,317 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRCTC | Loading...</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --irctc-blue: #213d77;
+            --irctc-orange: #fb792b;
+        }
 
-    <title>IRCTC Railway Booking</title>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #2c4e91 0%, #1a2e5a 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
 
-    <link rel="stylesheet" href="css/style.css">
+        .splash-container {
+            text-align: center;
+            color: white;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+        }
+
+        .main-logo {
+            font-size: 80px;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .spin-ring {
+            width: 100%;
+            height: 100%;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top: 6px solid var(--irctc-orange);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .logo-icon-spin {
+            animation: rotateLogo 3s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateLogo {
+            0% { transform: translate(-50%, -50%) rotateY(0deg); }
+            50% { transform: translate(-50%, -50%) rotateY(180deg); }
+            100% { transform: translate(-50%, -50%) rotateY(360deg); }
+        }
+
+        .app-name {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin: 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 14px;
+            opacity: 0.8;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 40px auto 0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--irctc-orange);
+            animation: progress 3s linear forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Fade out animation for the whole splash */
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- ================= NAVBAR ================= -->
+    <div class="splash-container" id="splash">
+        <div class="logo-wrapper">
+            <div class="spin-ring"></div>
+            <i class="fas fa-subway main-logo logo-icon-spin"></i>
+        </div>
 
-<header class="navbar">
+        <h1 class="app-name">IRCTC</h1>
+        <p class="tagline">Next Generation Ticketing System</p>
 
-    <div class="logo">
-        <span>IRCTC</span>
-        <small>Railway Booking</small>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
     </div>
 
-    <nav>
-        <a href="index.html" class="active">Home</a>
-        <a href="search-train.html">Search Train</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-    </nav>
-
-</header>
-
-
-<!-- ================= HERO ================= -->
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h1>Welcome to IRCTC Railway Booking</h1>
-
-        <p>
-            Search trains, check seat availability
-            and book your journey easily.
-        </p>
-
-
-        <!-- SEARCH BOX -->
-
-        <div class="search-box">
-
-            <h2>Search Train</h2>
-
-            <div class="search-fields">
-
-                <!-- FROM -->
-
-                <div class="input-group">
-
-                    <label for="from">
-                        From Station
-                    </label>
-
-                    <input
-                            type="text"
-                            id="from"
-                            placeholder="Enter departure station"
-                            autocomplete="off">
-
-                </div>
-
-
-                <!-- TO -->
-
-                <div class="input-group">
-
-                    <label for="to">
-                        To Station
-                    </label>
-
-                    <input
-                            type="text"
-                            id="to"
-                            placeholder="Enter destination station"
-                            autocomplete="off">
-
-                </div>
-
-
-                <!-- DATE -->
-
-                <div class="input-group">
-
-                    <label for="journeyDate">
-                        Journey Date
-                    </label>
-
-                    <input
-                            type="date"
-                            id="journeyDate">
-
-                </div>
-
-
-                <!-- SEARCH BUTTON -->
-
-                <button
-                        type="button"
-                        class="search-btn"
-                        onclick="searchTrain()">
-
-                    Search Train
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ================= FEATURES ================= -->
-
-<section class="features">
-
-    <h2>Why Choose Our Railway Booking?</h2>
-
-    <div class="feature-container">
-
-        <div class="feature-card">
-
-            <div class="icon">🚆</div>
-
-            <h3>Search Trains</h3>
-
-            <p>
-                Search available trains between
-                your preferred stations.
-            </p>
-
-        </div>
-
-
-        <div class="feature-card">
-
-            <div class="icon">🎫</div>
-
-            <h3>Easy Booking</h3>
-
-            <p>
-                Select your train, passengers
-                and preferred class.
-            </p>
-
-        </div>
-
-
-        <div class="feature-card">
-
-            <div class="icon">💳</div>
-
-            <h3>Secure Payment</h3>
-
-            <p>
-                Complete your booking with
-                secure online payment.
-            </p>
-
-        </div>
-
-
-        <div class="feature-card">
-
-            <div class="icon">📄</div>
-
-            <h3>PNR Ticket</h3>
-
-            <p>
-                Get your confirmed booking
-                and PNR details.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-    <div class="footer-content">
-
-        <h3>IRCTC Railway Booking</h3>
-
-        <p>
-            Your journey, our responsibility.
-        </p>
-
-        <p>
-            © 2026 IRCTC Railway Booking.
-            All Rights Reserved.
-        </p>
-
-    </div>
-
-</footer>
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
-<script>
-
-    // Set today's date as minimum date
-    const today = new Date()
-        .toISOString()
-        .split("T")[0];
-
-    document
-        .getElementById("journeyDate")
-        .setAttribute("min", today);
-
-
-    // Search Train
-    function searchTrain() {
-
-        const from =
-            document
-                .getElementById("from")
-                .value
-                .trim();
-
-        const to =
-            document
-                .getElementById("to")
-                .value
-                .trim();
-
-        const journeyDate =
-            document
-                .getElementById("journeyDate")
-                .value;
-
-
-        // Validation
-
-        if (!from) {
-
-            alert("Please enter departure station.");
-
-            return;
-        }
-
-
-        if (!to) {
-
-            alert("Please enter destination station.");
-
-            return;
-        }
-
-
-        if (!journeyDate) {
-
-            alert("Please select journey date.");
-
-            return;
-        }
-
-
-        if (
-            from.toLowerCase() ===
-            to.toLowerCase()
-        ) {
-
-            alert(
-                "From and To stations cannot be same."
-            );
-
-            return;
-        }
-
-
-        // Save search information
-
-        localStorage.setItem(
-            "from",
-            from
-        );
-
-        localStorage.setItem(
-            "to",
-            to
-        );
-
-        localStorage.setItem(
-            "journeyDate",
-            journeyDate
-        );
-
-
-        // Open search page
-
-        window.location.href =
-            "search-train.html";
-    }
-
-</script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const userId = localStorage.getItem("userId");
+
+                // Add fade out effect
+                document.getElementById("splash").classList.add("fade-out");
+
+                setTimeout(function() {
+                    if (userId) {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        window.location.href = "home.html";
+                    }
+                }, 500); // Small delay for the fade animation
+
+            }, 3000); // 3 seconds splash duration
+        });
+    </script>
 </body>
-
 </html>

@@ -70,6 +70,22 @@ public class TrainScheduleService {
     }
 
     // =========================
+    // SEARCH SCHEDULES
+    // =========================
+    public List<TrainSchedule> searchSchedules(
+            String from,
+            String to,
+            LocalDate date) {
+
+        return scheduleRepository
+                .findByTrainSourceIgnoreCaseAndTrainDestinationIgnoreCaseAndJourneyDate(
+                        from,
+                        to,
+                        date
+                );
+    }
+
+    // =========================
     // ADD SCHEDULE
     // =========================
     public TrainSchedule addSchedule(
