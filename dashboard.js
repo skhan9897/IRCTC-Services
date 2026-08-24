@@ -1,0 +1,5 @@
+// Small interactions: toggle sidebar and populate sample KPIs (placeholder for real data)
+document.addEventListener('DOMContentLoaded',function(){nconst toggle = document.getElementById('toggleBtn');nconst sidebar = document.getElementById('sidebar');ntoggle.addEventListener('click',function(){n  sidebar.classList.toggle('collapsed');n  if(sidebar.classList.contains('collapsed')){n    sidebar.style.width = '64px';n  } else {n    sidebar.style.width = '';n  }n});
+// Example of updating KPIs dynamically (replace with API calls)
+function setKPIs(){n  document.getElementById('kpi-bookings').textContent = '14,892';n  document.getElementById('kpi-users').textContent = '4,321';n  document.getElementById('kpi-revenue').textContent = '₹ 5,23,400';n  document.getElementById('kpi-ontime').textContent = '92%';n}nsetKPIs();
+});

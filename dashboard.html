@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Professional Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">IRCTC <span class="badge">Pro</span></div>
+      <nav class="nav">
+        <a class="nav-item active" href="#">Dashboard</a>
+        <a class="nav-item" href="#">Bookings</a>
+        <a class="nav-item" href="#">Reports</a>
+        <a class="nav-item" href="#">Users</a>
+        <a class="nav-item" href="#">Settings</a>
+      </nav>
+      <div class="sidebar-foot">Logged in as <strong>Admin</strong></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="btn icon" id="toggleBtn" aria-label="Toggle sidebar">☰</button>
+        <div class="search">
+          <div class="search-dropdown" id="searchDropdown">
+            <input type="search" id="citySearchInput" placeholder="Search city or passenger..." aria-label="Search" autocomplete="off" />
+            <button class="btn icon" id="dropdownToggle" aria-label="Toggle cities">▾</button>
+            <div class="dropdown-panel" id="dropdownPanel" hidden>
+              <div class="dropdown-controls">
+                <input type="search" id="dropdownFilter" placeholder="Filter cities..." aria-label="Filter cities" />
+                <button class="btn" id="clearFilter">Clear</button>
+              </div>
+              <ul class="city-list" id="cityList" role="listbox" tabindex="-1"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="user">Admin ▾</div>
+      </header>
+
+      <section class="content">
+        <h1 class="page-title">Overview</h1>
+
+        <div class="kpi-grid">
+          <div class="kpi card">
+            <div class="kpi-title">Total Bookings</div>
+            <div class="kpi-value" id="kpi-bookings">14,892</div>
+            <div class="kpi-meta">+8% since last week</div>
+          </div>
+
+          <div class="kpi card">
+            <div class="kpi-title">Active Users</div>
+            <div class="kpi-value" id="kpi-users">4,321</div>
+            <div class="kpi-meta">+2% since yesterday</div>
+          </div>
+
+          <div class="kpi card">
+            <div class="kpi-title">Revenue</div>
+            <div class="kpi-value" id="kpi-revenue">₹ 5,23,400</div>
+            <div class="kpi-meta">Monthly target: 72%</div>
+          </div>
+
+          <div class="kpi card">
+            <div class="kpi-title">On-time Rate</div>
+            <div class="kpi-value" id="kpi-ontime">92%</div>
+            <div class="kpi-meta">Industry benchmark: 89%</div>
+          </div>
+        </div>
+
+        <div class="panel card">
+          <h2 class="panel-title">Recent Bookings</h2>
+          <table class="table" aria-label="Recent bookings">
+            <thead>
+              <tr><th>PNR</th><th>Passenger</th><th>Route</th><th>Date</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>PNR12345</td><td>Rahul S.</td><td>NDLS → BCT</td><td>2026-08-22</td><td><span class="status confirmed">Confirmed</span></td></tr>
+              <tr><td>PNR12346</td><td>Priya K.</td><td>MUM → JAT</td><td>2026-08-23</td><td><span class="status pending">Pending</span></td></tr>
+              <tr><td>PNR12347</td><td>Arun P.</td><td>CHN → NDLS</td><td>2026-08-24</td><td><span class="status cancelled">Cancelled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">© 2026 IRCTC Services</footer>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+  <script src="dashboard-search.js"></script>
+</body>
+</html>
