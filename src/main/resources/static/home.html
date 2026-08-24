@@ -97,6 +97,25 @@
             width: 100%;
             box-sizing: border-box;
         }
+        .station-input-wrapper {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .station-input-wrapper input {
+            flex: 1;
+        }
+        .station-search-btn {
+            background: var(--irctc-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            height: 44px;
+            white-space: nowrap;
+        }
 
         /* Autocomplete styles */
         .autocomplete-items {
@@ -182,13 +201,19 @@
 
     <div class="search-container">
         <div class="search-grid">
-            <div class="input-group autocomplete">
+            <div class="input-group">
                 <label>FROM STATION</label>
-                <input type="text" id="from" placeholder="Enter source" autocomplete="off">
+                <div class="station-input-wrapper">
+                    <input type="text" id="from" placeholder="Enter source" autocomplete="off">
+                    <button type="button" class="station-search-btn" data-target="from">Search</button>
+                </div>
             </div>
-            <div class="input-group autocomplete">
+            <div class="input-group">
                 <label>TO STATION</label>
-                <input type="text" id="to" placeholder="Enter destination" autocomplete="off">
+                <div class="station-input-wrapper">
+                    <input type="text" id="to" placeholder="Enter destination" autocomplete="off">
+                    <button type="button" class="station-search-btn" data-target="to">Search</button>
+                </div>
             </div>
             <div class="input-group">
                 <label>JOURNEY DATE</label>
@@ -231,43 +256,98 @@
 
         async function fetchStations() {
             try {
-                const response = await fetch('/api/stations');
-                const data = await response.json();
-                stationList = data.map(s => `${s.stationName} (${s.stationCode})`);
+                const [stationsRes, trainsRes] = await Promise.all([
+                    fetch('/api/stations'),
+                    fetch('/api/trains')
+                ]);
+
+                const stationData = stationsRes.ok ? await stationsRes.json() : [];
+                const trainData = trainsRes.ok ? await trainsRes.json() : [];
+
+                const combined = [
+                    ...stationData,
+                    ...trainData.map(train => ({
+                        stationName: train.source,
+                        stationCode: train.sourceCode || '',
+                        city: train.source,
+                        state: train.sourceState || ''
+                    })),
+                    ...trainData.map(train => ({
+                        stationName: train.destination,
+                        stationCode: train.destinationCode || '',
+                        city: train.destination,
+                        state: train.destinationState || ''
+                    }))
+                ];
+
+                stationList = buildStationSuggestions(combined);
+
                 autocomplete(document.getElementById("from"), stationList);
                 autocomplete(document.getElementById("to"), stationList);
+
+                document.querySelectorAll('.station-search-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const input = document.getElementById(btn.dataset.target);
+                        showSuggestions(input, stationList);
+                        input.focus();
+                    });
+                });
             } catch (error) {
                 console.error("Error fetching stations:", error);
-                // Fallback basic stations if API fails
-                stationList = ["NEW DELHI (NDLS)", "MUMBAI CENTRAL (MMCT)", "CHENNAI CENTRAL (MAS)", "KOLKATA (KOAA)", "BAREILLY (BE)", "LUCKNOW (LKO)"];
+                stationList = ["NEW DELHI (NDLS)", "MUMBAI CENTRAL (MMCT)", "BAREILLY (BE)", "LUCKNOW (LKO)"];
                 autocomplete(document.getElementById("from"), stationList);
                 autocomplete(document.getElementById("to"), stationList);
+            }
+        }
+
+        function buildStationSuggestions(data) {
+            const items = [];
+            data.forEach(s => {
+                const label = `${s.stationName} ${s.stationCode ? '('+s.stationCode+')' : ''} ${s.city || ''} ${s.state || ''}`.trim();
+                if (label && !items.includes(label)) items.push(label);
+            });
+            return items;
+        }
+
+        function closeAllLists(elmnt) {
+            let x = document.getElementsByClassName("autocomplete-items");
+            for (let i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != document.getElementById("from") && elmnt != document.getElementById("to")) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+
+        function showSuggestions(inp, arr) {
+            closeAllLists();
+            let a, b, i, val = inp.value;
+            a = document.createElement("DIV");
+            a.setAttribute("id", inp.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            inp.parentNode.appendChild(a);
+
+            const filtered = arr.filter(item => item.toUpperCase().includes(val.toUpperCase()));
+            const toShow = filtered.length > 0 ? filtered : arr.slice(0, 10);
+
+            for (i = 0; i < toShow.length; i++) {
+                b = document.createElement("DIV");
+                b.innerHTML = toShow[i];
+                b.innerHTML += "<input type='hidden' value='" + toShow[i] + "'>";
+                b.addEventListener("click", function(e) {
+                    inp.value = this.getElementsByTagName("input")[0].value;
+                    closeAllLists();
+                });
+                a.appendChild(b);
             }
         }
 
         function autocomplete(inp, arr) {
             let currentFocus;
             inp.addEventListener("input", function(e) {
-                let a, b, i, val = this.value;
-                closeAllLists();
-                if (!val) { return false;}
-                currentFocus = -1;
-                a = document.createElement("DIV");
-                a.setAttribute("id", this.id + "autocomplete-list");
-                a.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(a);
-                for (i = 0; i < arr.length; i++) {
-                    if (arr[i].toUpperCase().includes(val.toUpperCase())) {
-                        b = document.createElement("DIV");
-                        b.innerHTML = arr[i];
-                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                        b.addEventListener("click", function(e) {
-                            inp.value = this.getElementsByTagName("input")[0].value;
-                            closeAllLists();
-                        });
-                        a.appendChild(b);
-                    }
-                }
+                showSuggestions(this, arr);
+            });
+            inp.addEventListener("focus", function() {
+                showSuggestions(this, arr);
             });
             inp.addEventListener("keydown", function(e) {
                 let x = document.getElementById(this.id + "autocomplete-list");

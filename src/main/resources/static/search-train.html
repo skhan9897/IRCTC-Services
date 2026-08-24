@@ -332,21 +332,11 @@
 
         let stationList = [];
 
-        function normalizeStationLabel(station) {
-            const stationName = station?.stationName || station?.city || station?.name || '';
-            const stationCode = station?.stationCode || station?.code || '';
-            const state = station?.state || '';
-            const parts = [stationName, stationCode, state].filter(Boolean);
-            return parts.join(' ');
-        }
-
         function buildStationSuggestions(data) {
             const items = [];
-            data.forEach((station) => {
-                const label = normalizeStationLabel(station);
-                if (label && !items.includes(label)) {
-                    items.push(label);
-                }
+            data.forEach(s => {
+                const label = `${s.stationName} ${s.stationCode ? '('+s.stationCode+')' : ''} ${s.city || ''} ${s.state || ''}`.trim();
+                if (label && !items.includes(label)) items.push(label);
             });
             return items;
         }
@@ -417,15 +407,14 @@
         function showSuggestions(inp, arr) {
             closeAllStationLists(inp);
             const filtered = arr.filter(option => option.toUpperCase().includes((inp.value || '').toUpperCase()));
-            if (!filtered.length && !inp.value) {
-                filtered.push(...arr.slice(0, 12));
-            }
-            if (!filtered.length) return false;
+            const toShow = filtered.length > 0 ? filtered : arr.slice(0, 12);
+
+            if (!toShow.length) return false;
             const list = document.createElement('DIV');
             list.setAttribute('id', inp.id + 'autocomplete-list');
             list.setAttribute('class', 'autocomplete-items');
             inp.parentNode.parentNode.appendChild(list);
-            filtered.forEach((value) => {
+            toShow.forEach((value) => {
                 const item = document.createElement('DIV');
                 item.innerHTML = value;
                 item.innerHTML += "<input type='hidden' value='" + value + "'>";
@@ -483,6 +472,8 @@
 
         fetchStations();
 
+        let currentResults = [];
+
         async function searchTrains() {
             const from = document.getElementById("from").value;
             const to = document.getElementById("to").value;
@@ -501,25 +492,26 @@
             resultsDiv.innerHTML = '<div class="no-trains"><i class="fas fa-spinner fa-spin fa-2x"></i><br><p>Searching for best trains...</p></div>';
 
             try {
-                // Using the specific date search implemented earlier if available,
-                // falling back to basic search
-                const res = await fetch(`/api/trains/search?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
-                const trains = await res.json();
-                displayTrains(trains);
+                // Using the specific date search via TrainSchedule
+                const res = await fetch(`/api/schedules/search?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${date}`);
+                const schedules = await res.json();
+                currentResults = schedules;
+                displaySchedules(schedules);
             } catch (err) {
                 resultsDiv.innerHTML = '<div class="no-trains"><h3>Error searching trains.</h3></div>';
             }
         }
 
-        function displayTrains(trains) {
+        function displaySchedules(schedules) {
             const resultsDiv = document.getElementById("resultsList");
-            if (trains.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-trains"><h3>No trains found for this route.</h3></div>';
+            if (schedules.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-trains"><h3>No trains found for this route on the selected date.</h3></div>';
                 return;
             }
 
             resultsDiv.innerHTML = "";
-            trains.forEach(train => {
+            schedules.forEach((schedule, index) => {
+                const train = schedule.train;
                 const card = document.createElement("div");
                 card.className = "train-card";
 
@@ -527,16 +519,20 @@
                     <div class="train-info">
                         <div class="train-name-num">
                             <h3>${train.trainName}</h3>
-                            <p>Train No: ${train.trainNumber}</p>
+                            <p>Train No: <span style="color:var(--irctc-orange); font-weight:700">${train.trainNumber}</span></p>
                         </div>
                         <div style="text-align:right">
-                            <span style="color:var(--irctc-blue); font-weight:600">Runs: Daily</span>
+                            <span style="color:var(--irctc-blue); font-weight:600">Date: ${schedule.journeyDate}</span>
+                            <br>
+                            <small style="color:${schedule.availableSeats > 0 ? '#2ecc71' : '#e74c3c'}; font-weight:600">
+                                ${schedule.availableSeats} Seats Available
+                            </small>
                         </div>
                     </div>
 
                     <div class="route-display">
                         <div class="station-box">
-                            <h4>${train.departureTime}</h4>
+                            <h4>${schedule.departureTime || train.departureTime}</h4>
                             <p>${train.source}</p>
                         </div>
                         <div class="time-arrow">
@@ -544,26 +540,26 @@
                             <div style="font-size:12px">Express</div>
                         </div>
                         <div class="station-box" style="text-align:right">
-                            <h4>${train.arrivalTime}</h4>
+                            <h4>${schedule.arrivalTime || train.arrivalTime}</h4>
                             <p>${train.destination}</p>
                         </div>
                     </div>
 
                     <div class="availability-grid">
-                        ${renderClass('Sleeper', train.sleeperFare, 'SL', train.id)}
-                        ${renderClass('AC 3 Tier', train.ac3Fare, 'AC3', train.id)}
-                        ${renderClass('AC 2 Tier', train.ac2Fare, 'AC2', train.id)}
-                        ${renderClass('AC 1 Tier', train.ac1Fare, 'AC1', train.id)}
+                        ${renderClass('Sleeper', train.sleeperFare, 'SL', index)}
+                        ${renderClass('AC 3 Tier', train.ac3Fare, 'AC3', index)}
+                        ${renderClass('AC 2 Tier', train.ac2Fare, 'AC2', index)}
+                        ${renderClass('AC 1 Tier', train.ac1Fare, 'AC1', index)}
                     </div>
                 `;
                 resultsDiv.appendChild(card);
             });
         }
 
-        function renderClass(name, fare, code, id) {
+        function renderClass(name, fare, code, resultIndex) {
             if (!fare) return '';
             return `
-                <div class="class-btn" onclick="selectTrain(${id}, '${code}', ${fare})">
+                <div class="class-btn" onclick="selectTrain(${resultIndex}, '${code}', ${fare})">
                     <strong>${code}</strong>
                     <span>₹${fare}</span>
                     <small>${name}</small>
@@ -571,10 +567,18 @@
             `;
         }
 
-        function selectTrain(id, code, fare) {
-            localStorage.setItem("selectedTrainId", id);
+        function selectTrain(index, code, fare) {
+            const schedule = currentResults[index];
+            const train = schedule.train;
+
+            // Save full train object and schedule info for booking
+            localStorage.setItem("selectedTrain", JSON.stringify(train));
+            localStorage.setItem("selectedTrainId", train.id);
+            localStorage.setItem("selectedScheduleId", schedule.id);
             localStorage.setItem("classType", code);
             localStorage.setItem("selectedFare", fare);
+            localStorage.setItem("journeyDate", schedule.journeyDate);
+
             window.location.href = "booking.html";
         }
 
