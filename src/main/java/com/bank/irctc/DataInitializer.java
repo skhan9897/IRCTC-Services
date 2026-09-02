@@ -224,5 +224,3 @@ public class DataInitializer implements CommandLineRunner {
         return t;
     }
 }
-    }
-}
