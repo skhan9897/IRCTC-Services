@@ -5,6 +5,7 @@ import com.bank.irctc.models.LoginRequest
 import com.bank.irctc.models.LoginResponse
 import com.bank.irctc.models.Station
 import com.bank.irctc.models.Train
+import com.bank.irctc.models.TrainSchedule
 import com.bank.irctc.models.User
 import retrofit2.Response
 import retrofit2.http.Body

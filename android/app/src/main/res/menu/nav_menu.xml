@@ -1,19 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_subway"
-        android:title="Home" />
-    <item
-        android:id="@+id/nav_bookings"
-        android:icon="@drawable/ic_subway"
-        android:title="My Bookings" />
-    <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_subway"
-        android:title="Profile" />
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_subway"
-        android:title="Logout" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search"
+            android:title="Search Trains" />
+        <item
+            android:id="@+id/nav_bookings"
+            android:icon="@drawable/ic_email"
+            android:title="My Bookings" />
+        <item
+            android:id="@+id/nav_pnr"
+            android:icon="@drawable/ic_notifications"
+            android:title="PNR Status" />
+        <item
+            android:id="@+id/nav_cancel"
+            android:icon="@drawable/ic_subway"
+            android:title="Cancel Ticket" />
+        <item
+            android:id="@+id/nav_passengers"
+            android:icon="@drawable/ic_lock"
+            android:title="Passenger Details" />
+        <item
+            android:id="@+id/nav_payments"
+            android:icon="@drawable/ic_subway"
+            android:title="Payment History" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_lock"
+            android:title="My Profile" />
+    </group>
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/nav_notif"
+                android:icon="@drawable/ic_notifications"
+                android:title="Notifications" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_subway"
+                android:title="Help &amp; Support" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_subway"
+                android:title="Logout" />
+        </menu>
+    </item>
 </menu>
