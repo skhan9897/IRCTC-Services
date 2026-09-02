@@ -31,9 +31,14 @@ class SplashActivity : AppCompatActivity() {
         progressAnimator.duration = 3000
         progressAnimator.start()
 
-        // 3. Navigation to Login after 3 seconds
+        // 3. Navigation after 3 seconds
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, LoginActivity::class.java)
+            val sessionManager = SessionManager(this)
+            val intent = if (sessionManager.isLoggedIn()) {
+                Intent(this, MainActivity::class.java)
+            } else {
+                Intent(this, LoginActivity::class.java)
+            }
             startActivity(intent)
             finish()
         }, 3000)

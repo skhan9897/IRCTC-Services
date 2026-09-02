@@ -36,10 +36,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, pass: String) {
+        val sessionManager = SessionManager(this)
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.api.login(LoginRequest(email, pass))
                 if (response.isSuccessful && response.body() != null) {
+                    val user = response.body()!!
+                    sessionManager.saveUser(user.id, user.name, user.email)
                     Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()

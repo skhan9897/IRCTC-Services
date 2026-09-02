@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bank.irctc.databinding.ItemTrainBinding
-import com.bank.irctc.models.Train
+import com.bank.irctc.models.TrainSchedule
 
 class TrainAdapter(
-    private val trains: List<Train>,
-    private val onTrainClick: (Train) -> Unit
+    private val schedules: List<TrainSchedule>,
+    private val onTrainClick: (TrainSchedule) -> Unit
 ) : RecyclerView.Adapter<TrainAdapter.TrainViewHolder>() {
 
     class TrainViewHolder(val binding: ItemTrainBinding) : RecyclerView.ViewHolder(binding.root)
@@ -19,20 +19,21 @@ class TrainAdapter(
     }
 
     override fun onBindViewHolder(holder: TrainViewHolder, position: Int) {
-        val train = trains[position]
+        val schedule = schedules[position]
+        val train = schedule.train
         holder.binding.apply {
             trainName.text = train.trainName
             trainNumber.text = "#${train.trainNumber}"
-            depTime.text = train.departureTime
-            arrTime.text = train.arrivalTime
+            depTime.text = schedule.departureTime ?: train.departureTime
+            arrTime.text = schedule.arrivalTime ?: train.arrivalTime
             source.text = train.source
             destination.text = train.destination
             fare.text = "₹${train.sleeperFare}"
-            availableSeats.text = "Available: ${train.availableSeats}"
+            availableSeats.text = "Available: ${schedule.availableSeats}"
             
-            root.setOnClickListener { onTrainClick(train) }
+            root.setOnClickListener { onTrainClick(schedule) }
         }
     }
 
-    override fun getItemCount() = trains.size
+    override fun getItemCount() = schedules.size
 }

@@ -27,30 +27,32 @@ class SearchActivity : AppCompatActivity() {
         
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         
-        loadTrains(from, to)
+        loadTrains(from, to, date)
     }
 
-    private fun loadTrains(from: String, to: String) {
+    private fun loadTrains(from: String, to: String, date: String) {
         lifecycleScope.launch {
             try {
                 // Extract station name from "Station Name (CODE)"
-                val fromCode = from.substringAfter("(").substringBefore(")")
-                val toCode = to.substringAfter("(").substringBefore(")")
+                val fromStation = from.substringBefore(" (")
+                val toStation = to.substringBefore(" (")
                 
-                val response = RetrofitClient.api.searchTrains(fromCode, toCode)
+                val response = RetrofitClient.api.searchSchedules(fromStation, toStation, date)
                 if (response.isSuccessful) {
-                    val trains = response.body() ?: emptyList()
-                    if (trains.isEmpty()) {
-                        Toast.makeText(this@SearchActivity, "No trains found", Toast.LENGTH_SHORT).show()
+                    val schedules = response.body() ?: emptyList()
+                    if (schedules.isEmpty()) {
+                        Toast.makeText(this@SearchActivity, "No trains found for this date", Toast.LENGTH_SHORT).show()
                     }
-                    binding.recyclerView.adapter = TrainAdapter(trains) { train ->
+                    binding.recyclerView.adapter = TrainAdapter(schedules) { schedule ->
+                        val train = schedule.train
                         val intent = Intent(this@SearchActivity, BookingActivity::class.java)
                         intent.putExtra("TRAIN_ID", train.id)
                         intent.putExtra("TRAIN_NAME", train.trainName)
                         intent.putExtra("TRAIN_NUM", train.trainNumber)
                         intent.putExtra("FROM", train.source)
                         intent.putExtra("TO", train.destination)
-                        intent.putExtra("DATE", date)
+                        intent.putExtra("DATE", schedule.journeyDate)
+                        intent.putExtra("FARE", train.sleeperFare)
                         startActivity(intent)
                     }
                 } else {

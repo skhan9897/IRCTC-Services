@@ -26,6 +26,10 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".BookingActivity" />
+        <activity android:name=".MyBookingsActivity" />
+        <activity android:name=".PaymentActivity" />
+        <activity android:name=".TicketActivity" />
+        <activity android:name=".ProfileActivity" />
 
     </application>
 
