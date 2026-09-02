@@ -1,5 +1,7 @@
 package com.bank.irctc.models
 
+import com.google.gson.annotations.SerializedName
+
 data class User(
     val id: Long? = null,
     val name: String,
@@ -15,10 +17,10 @@ data class LoginRequest(
 )
 
 data class LoginResponse(
+    @SerializedName("userId")
     val id: Long,
     val name: String,
     val email: String,
-    val mobile: String,
     val role: String,
-    val token: String? = null // Backend might return a token or just user details
+    val message: String? = null
 )

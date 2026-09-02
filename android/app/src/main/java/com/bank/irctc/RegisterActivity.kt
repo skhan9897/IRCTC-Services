@@ -46,7 +46,8 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this@RegisterActivity, "Registration successful. Please login.", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Toast.makeText(this@RegisterActivity, "Registration failed", Toast.LENGTH_SHORT).show()
+                    val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                    Toast.makeText(this@RegisterActivity, "Registration failed: $errorMsg", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@RegisterActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()

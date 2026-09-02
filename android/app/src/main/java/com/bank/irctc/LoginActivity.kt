@@ -47,7 +47,8 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    val errorMsg = response.errorBody()?.string() ?: "Invalid credentials"
+                    Toast.makeText(this@LoginActivity, "Login failed: $errorMsg", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()

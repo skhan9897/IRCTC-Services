@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="#F0F5FF">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -20,20 +20,19 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="80dp"
                 app:contentInsetStart="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingHorizontal="16dp">
+                    android:paddingHorizontal="25dp">
 
                     <ImageView
                         android:id="@+id/menuBtn"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_centerVertical="true"
-                        android:padding="8dp"
                         android:src="@drawable/ic_subway"
                         app:tint="#1E293B" />
 
@@ -41,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="20dp"
                         android:layout_toEndOf="@id/menuBtn"
                         android:orientation="vertical">
 
@@ -49,9 +48,10 @@
                             android:id="@+id/welcomeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Welcome back, Mahir Khan!"
+                            android:text="Welcome back, Mahir Khan! 👋"
                             android:textColor="#1E293B"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
+                            android:fontFamily="sans-serif-black"
                             android:textStyle="bold" />
 
                         <TextView
@@ -59,24 +59,32 @@
                             android:layout_height="wrap_content"
                             android:text="Here's what's happening with your travel plans."
                             android:textColor="#64748B"
-                            android:textSize="10sp" />
+                            android:textSize="11sp" />
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/profileImg"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/profileCard"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_subway" />
+                        app:cardCornerRadius="19dp"
+                        app:cardElevation="2dp">
+                        <ImageView
+                            android:id="@+id/profileImg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_subway" />
+                    </com.google.android.material.card.MaterialCardView>
 
                     <ImageView
                         android:id="@+id/notifBtn"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
-                        android:layout_toStartOf="@id/profileImg"
+                        android:layout_marginEnd="20dp"
+                        android:layout_toStartOf="@id/profileCard"
                         android:src="@drawable/ic_notifications"
                         app:tint="#64748B" />
 
@@ -93,19 +101,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingBottom="40dp">
 
-                <!-- Stats Horizontal Scroll -->
+                <!-- Horizontal Stats -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="15dp"
                     android:scrollbars="none">
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <include android:id="@+id/statTotal" layout="@layout/item_stat_card" />
                         <include android:id="@+id/statUpcoming" layout="@layout/item_stat_card" />
                         <include android:id="@+id/statCompleted" layout="@layout/item_stat_card" />
@@ -113,111 +120,120 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
-                <!-- Upcoming Journey -->
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp">
+                    android:paddingHorizontal="25dp"
+                    android:orientation="vertical">
+
+                    <!-- Upcoming Journey Section -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upcoming Journey"
+                            android:textColor="#1E293B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/viewAllUpcoming"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="View All"
+                            android:textColor="#1A73E8"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <include
+                        android:id="@+id/upcomingTicket"
+                        layout="@layout/layout_upcoming_ticket"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp" />
+
+                    <!-- My Bookings List -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Bookings"
+                            android:textColor="#1E293B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/viewAllBookings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="View All"
+                            android:textColor="#1A73E8"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recentBookingsRv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/item_booking" />
+
+                    <!-- Quick Actions -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upcoming Journey"
+                        android:layout_marginTop="30dp"
+                        android:text="Quick Actions"
                         android:textColor="#1E293B"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/viewAllUpcoming"
-                        android:layout_width="wrap_content"
+
+                    <GridLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="View All"
-                        android:textColor="#003399"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
+                        android:layout_marginTop="15dp"
+                        android:columnCount="4">
+                        <include android:id="@+id/actionSearch" layout="@layout/item_quick_action" />
+                        <include android:id="@+id/actionBook" layout="@layout/item_quick_action" />
+                        <include android:id="@+id/actionCancel" layout="@layout/item_quick_action" />
+                        <include android:id="@+id/actionPnr" layout="@layout/item_quick_action" />
+                    </GridLayout>
 
-                <include
-                    android:id="@+id/upcomingTicket"
-                    layout="@layout/layout_upcoming_ticket"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" />
+                    <!-- Travel Update Banner -->
+                    <include
+                        android:id="@+id/travelUpdate"
+                        layout="@layout/layout_travel_update"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp" />
 
-                <!-- Quick Actions -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Quick Actions"
-                    android:textColor="#1E293B"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:columnCount="4">
-                    <include android:id="@+id/actionSearch" layout="@layout/item_quick_action" />
-                    <include android:id="@+id/actionBook" layout="@layout/item_quick_action" />
-                    <include android:id="@+id/actionCancel" layout="@layout/item_quick_action" />
-                    <include android:id="@+id/actionPnr" layout="@layout/item_quick_action" />
-                </GridLayout>
-
-                <!-- Travel Update Banner -->
-                <include
-                    android:id="@+id/travelUpdate"
-                    layout="@layout/layout_travel_update"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp" />
-
-                <!-- My Bookings List -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp">
+                    <!-- Need Help -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My Bookings"
+                        android:layout_marginTop="30dp"
+                        android:text="Need Help?"
                         android:textColor="#1E293B"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/viewAllBookings"
-                        android:layout_width="wrap_content"
+
+                    <include
+                        android:id="@+id/helpSection"
+                        layout="@layout/layout_help_section"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="View All"
-                        android:textColor="#003399"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
+                        android:layout_marginTop="15dp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recentBookingsRv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:nestedScrollingEnabled="false" />
-
-                <!-- Need Help -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Need Help?"
-                    android:textColor="#1E293B"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <include
-                    android:id="@+id/helpSection"
-                    layout="@layout/layout_help_section"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" />
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -226,11 +242,12 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
+        android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#002266"
         app:headerLayout="@layout/nav_header"
+        app:itemIconPadding="16dp"
         app:itemIconTint="#B3FFFFFF"
         app:itemTextColor="#B3FFFFFF"
         app:menu="@menu/nav_menu" />
