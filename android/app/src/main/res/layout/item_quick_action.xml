@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_columnWeight="1"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/actionIconBg"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:cardBackgroundColor="#E0E7FF"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/actionIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_subway"
+            app:tint="#4338CA" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/actionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Search"
+        android:textColor="#1E293B"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
