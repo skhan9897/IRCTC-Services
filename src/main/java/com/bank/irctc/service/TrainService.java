@@ -50,6 +50,13 @@ public class TrainService {
     }
 
     // =========================
+    // SEARCH TRAIN BY NAME OR NUMBER
+    // =========================
+    public List<Train> searchByNameOrNumber(String query) {
+        return trainRepository.findByTrainNameContainingIgnoreCaseOrTrainNumberContainingIgnoreCase(query, query);
+    }
+
+    // =========================
     // ADD TRAIN
     // =========================
     public Train addTrain(Train train) {

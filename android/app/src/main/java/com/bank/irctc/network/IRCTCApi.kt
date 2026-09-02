@@ -31,6 +31,11 @@ interface IRCTCApi {
         @Query("to") to: String
     ): Response<List<Train>>
 
+    @GET("api/trains/find")
+    suspend fun findTrains(
+        @Query("query") query: String
+    ): Response<List<Train>>
+
     @GET("api/schedules/search")
     suspend fun searchSchedules(
         @Query("from") from: String,

@@ -3,591 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Train | IRCTC Next Gen Booking</title>
+    <title>Search Trains | IRCTC Professional Booking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --irctc-blue: #213d77;
-            --irctc-orange: #fb792b;
-            --bg-light: #f0f2f5;
+            --sidebar-bg: #002266;
+            --sidebar-active: #1a73e8;
+            --bg-color: #f0f5ff;
+            --accent-orange: #fb792b;
+            --text-dark: #1a1a1a;
+            --text-muted: #64748b;
             --white: #ffffff;
-            --text-dark: #333;
-            --text-muted: #777;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
+            --border-light: #e2e8f0;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            margin: 0;
-            display: flex;
-            min-height: 100vh;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); display: flex; color: var(--text-dark); min-height: 100vh; }
 
-        /* Sidebar Styles (Copy from dashboard) */
-        .sidebar {
-            width: 260px;
-            background: var(--irctc-blue);
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: 100vh;
-            z-index: 100;
-        }
+        /* Sidebar Styles (Same as Dashboard) */
+        .sidebar { width: 260px; background: var(--sidebar-bg); height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
+        .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 12px; }
+        .sidebar-brand img { width: 42px; filter: brightness(0) invert(1); }
+        .sidebar-brand h2 { font-size: 20px; font-weight: 800; line-height: 1; }
+        .nav-list { list-style: none; flex: 1; padding-top: 10px; }
+        .nav-list li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .nav-list li a:hover, .nav-list li a.active { color: white; background: rgba(255,255,255,0.1); }
+        .nav-list li a.active { border-left: 5px solid var(--sidebar-active); background: rgba(26, 115, 232, 0.15); }
+        .nav-list li a i { width: 20px; font-size: 17px; }
 
-        .sidebar-brand { padding: 0 25px 30px; display: flex; align-items: center; gap: 12px; }
-        .sidebar-brand i { font-size: 28px; color: var(--white); }
-        .sidebar-brand span { font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+        /* Main Content */
+        .main { margin-left: 260px; flex: 1; padding: 25px 40px; }
 
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1; }
-        .sidebar-menu li a {
-            padding: 14px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 4px solid transparent;
-        }
+        /* Search Box Section */
+        .search-box { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px; }
+        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .form-group label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .form-group input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-light); border-radius: 10px; font-size: 14px; font-family: inherit; }
+        .form-group i { position: absolute; left: 15px; top: 38px; color: var(--sidebar-active); }
+        .btn-search { background: var(--accent-orange); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; height: 46px; transition: 0.3s; }
+        .btn-search:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(251, 121, 43, 0.3); }
 
-        .sidebar-menu li a:hover, .sidebar-menu li a.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: var(--irctc-orange);
-        }
+        /* Results List */
+        .train-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: 0.3s; border-left: 5px solid transparent; }
+        .train-card:hover { border-left-color: var(--sidebar-active); transform: translateX(5px); }
+        .train-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .train-name h3 { font-size: 18px; font-weight: 800; color: #1e293b; }
+        .train-name p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .train-fare { text-align: right; }
+        .train-fare h4 { font-size: 20px; font-weight: 800; color: var(--accent-orange); }
+        .train-fare p { font-size: 11px; color: var(--text-muted); }
 
-        .logout-area { padding: 20px 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .logout-btn-side { display: flex; align-items: center; gap: 12px; color: #ff8a8a; text-decoration: none; font-weight: 500; }
+        .route-visual { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .time-box h4 { font-size: 22px; font-weight: 900; color: #1e293b; }
+        .time-box p { font-size: 12px; color: var(--text-muted); }
+        .route-path { flex: 1; text-align: center; color: #cbd5e1; }
+        .route-path i { font-size: 20px; }
 
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 30px;
-        }
+        .class-options { display: flex; gap: 15px; flex-wrap: wrap; }
+        .class-btn { flex: 1; min-width: 120px; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .class-btn:hover { border-color: var(--sidebar-active); background: #f0f7ff; }
+        .class-btn strong { display: block; font-size: 15px; color: #1e293b; }
+        .class-btn span { font-size: 12px; color: #10b981; font-weight: 700; margin-top: 5px; display: block; }
 
-        /* Search Header */
-        .search-box {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
+        .no-results { text-align: center; padding: 60px; color: var(--text-muted); }
+        .no-results i { font-size: 48px; margin-bottom: 20px; opacity: 0.2; }
 
-        .search-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            align-items: end;
-        }
+        /* Autocomplete */
+        .autocomplete-items { position: absolute; border: 1px solid #d4d4d4; border-bottom: none; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #fff; border-radius: 0 0 10px 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; }
+        .autocomplete-items div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        .autocomplete-items div:hover { background-color: #f8fafc; color: var(--sidebar-active); }
 
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-
-        .input-with-icon { position: relative; }
-        .input-with-icon i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--irctc-blue); }
-        .input-with-icon input {
-            width: 100%;
-            padding: 12px 12px 12px 40px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-        .station-field {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .station-field .input-with-icon {
-            flex: 1;
-        }
-        .station-dropdown-btn {
-            background: var(--irctc-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 14px;
-            font-weight: 600;
-            cursor: pointer;
-            min-width: 92px;
-            height: 46px;
-        }
-
-        /* Autocomplete styles */
-        .autocomplete-items {
-            position: absolute;
-            border: 1px solid #d4d4d4;
-            border-bottom: none;
-            border-top: none;
-            z-index: 99;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: #fff;
-            max-height: 200px;
-            overflow-y: auto;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: left;
-        }
-        .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #d4d4d4;
-            color: var(--text-dark);
-        }
-        .autocomplete-items div:hover {
-            background-color: #e9e9e9;
-        }
-        .autocomplete-active {
-            background-color: var(--irctc-blue) !important;
-            color: #ffffff !important;
-        }
-
-        .search-btn {
-            background: var(--irctc-orange);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            height: 46px;
-        }
-
-        /* Train Results */
-        .train-card {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border-left: 5px solid var(--irctc-blue);
-        }
-
-        .train-card:hover {
-            transform: scale(1.01);
-        }
-
-        .train-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .train-name-num h3 { margin: 0; font-size: 20px; color: var(--irctc-blue); }
-        .train-name-num p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
-
-        .route-display {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 40px;
-            align-items: center;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-
-        .station-box h4 { margin: 0; font-size: 18px; }
-        .station-box p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
-
-        .time-arrow { text-align: center; color: var(--irctc-blue); }
-        .time-arrow i { font-size: 20px; }
-
-        .availability-grid {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .class-btn {
-            flex: 1;
-            min-width: 120px;
-            background: var(--white);
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .class-btn:hover {
-            border-color: var(--irctc-orange);
-            background: rgba(251, 121, 43, 0.05);
-        }
-
-        .class-btn.selected {
-            border-color: var(--irctc-orange);
-            background: rgba(251, 121, 43, 0.1);
-        }
-
-        .class-btn strong { display: block; font-size: 16px; margin-bottom: 5px; }
-        .class-btn span { display: block; color: var(--irctc-orange); font-weight: 600; }
-        .class-btn small { display: block; color: var(--text-muted); margin-top: 5px; }
-
-        .no-trains {
-            text-align: center;
-            padding: 60px;
-            background: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar-brand span, .sidebar-menu li a span { display: none; }
-            .main-content { margin-left: 80px; }
-        }
-
-        @media (max-width: 768px) {
-            .route-display { grid-template-columns: 1fr; gap: 20px; text-align: center; }
-            .time-arrow i { transform: rotate(90deg); }
-        }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <i class="fas fa-subway"></i>
-            <span>IRCTC</span>
+            <img src="https://storage.googleapis.com/app-inventor-releases/4849a6224859424e861e40eb340a66d0.jpg" alt="Logo">
+            <div><h2>IRCTC</h2><p>RAILWAY BOOKING</p></div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
-            <li><a href="search-train.html" class="active"><i class="fas fa-search"></i> <span>Search Train</span></a></li>
-            <li><a href="my-bookings.html"><i class="fas fa-ticket-alt"></i> <span>My Bookings</span></a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i> <span>My Profile</span></a></li>
-            <li><a href="payment.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <ul class="nav-list">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="search-train.html" class="active"><i class="fas fa-search"></i> Search Trains</a></li>
+            <li><a href="my-bookings.html"><i class="fas fa-ticket-alt"></i> My Bookings</a></li>
+            <li><a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
         </ul>
-        <div class="logout-area">
-            <a href="#" class="logout-btn-side" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
-        </div>
     </aside>
 
-    <main class="main-content">
+    <main class="main">
         <div class="search-box">
-            <h2 style="margin-top:0"><i class="fas fa-train" style="color:var(--irctc-blue)"></i> Search Your Journey</h2>
+            <h2 style="margin-bottom: 25px; font-size: 20px; font-weight: 800;">Find Your Train</h2>
+
+            <!-- SEARCH BY ROUTE -->
+            <div class="search-grid" style="margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 30px;">
+                <div class="form-group">
+                    <label>From Station</label>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="fromInput" placeholder="Enter source station" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>To Station</label>
+                    <i class="fas fa-location-arrow"></i>
+                    <input type="text" id="toInput" placeholder="Enter destination" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Travel Date</label>
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="date" id="dateInput">
+                </div>
+                <button class="btn-search" onclick="searchTrains()">Search by Route</button>
+            </div>
+
+            <!-- SEARCH BY NAME/NUMBER -->
             <div class="search-grid">
-                <div class="form-group">
-                    <label>FROM STATION</label>
-                    <div class="station-field">
-                        <div class="input-with-icon" style="flex:1;">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <input type="text" id="from" placeholder="Search city / station / junction" autocomplete="off">
-                        </div>
-                        <button type="button" class="station-dropdown-btn" data-target="from">Search</button>
-                    </div>
+                <div class="form-group" style="grid-column: span 3;">
+                    <label>Search by Train Name or Number</label>
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="queryInput" placeholder="e.g. Rajdhani or 12301" autocomplete="off">
                 </div>
-                <div class="form-group">
-                    <label>TO STATION</label>
-                    <div class="station-field">
-                        <div class="input-with-icon" style="flex:1;">
-                            <i class="fas fa-location-arrow"></i>
-                            <input type="text" id="to" placeholder="Search city / station / junction" autocomplete="off">
-                        </div>
-                        <button type="button" class="station-dropdown-btn" data-target="to">Search</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>JOURNEY DATE</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                        <input type="date" id="journeyDate">
-                    </div>
-                </div>
-                <button class="search-btn" onclick="searchTrains()">SEARCH TRAINS</button>
+                <button class="btn-search" style="background: var(--sidebar-active);" onclick="findTrains()">Find Train</button>
             </div>
         </div>
 
-        <div id="resultsList">
-            <!-- Results will appear here -->
-            <div class="no-trains">
-                <i class="fas fa-search fa-3x" style="color:#ddd; margin-bottom:20px"></i>
-                <h3>Start Searching</h3>
-                <p style="color:var(--text-muted)">Enter details above to find available trains for your route.</p>
+        <div id="resultsArea">
+            <div class="no-results">
+                <i class="fas fa-train"></i>
+                <h3>Start Your Search</h3>
+                <p>Enter journey details above to see available trains and schedules.</p>
             </div>
         </div>
     </main>
 
     <script>
-        // Load initial search if available
-        document.getElementById("from").value = localStorage.getItem("from") || "";
-        document.getElementById("to").value = localStorage.getItem("to") || "";
-        document.getElementById("journeyDate").value = localStorage.getItem("journeyDate") || "";
+        const fromInput = document.getElementById('fromInput');
+        const toInput = document.getElementById('toInput');
+        const dateInput = document.getElementById('dateInput');
 
-        const todayStr = new Date().toISOString().split("T")[0];
-        document.getElementById("journeyDate").setAttribute("min", todayStr);
+        // Set initial values from storage if any
+        fromInput.value = localStorage.getItem('from') || '';
+        toInput.value = localStorage.getItem('to') || '';
+        dateInput.value = localStorage.getItem('journeyDate') || '';
+
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
 
         let stationList = [];
 
-        function buildStationSuggestions(data) {
-            const items = [];
-            data.forEach(s => {
-                const label = `${s.stationName} ${s.stationCode ? '('+s.stationCode+')' : ''} ${s.city || ''} ${s.state || ''}`.trim();
-                if (label && !items.includes(label)) items.push(label);
-            });
-            return items;
-        }
-
         async function fetchStations() {
             try {
-                const [stationsRes, trainsRes] = await Promise.all([
-                    fetch('/api/stations'),
-                    fetch('/api/trains')
-                ]);
-
-                const stationData = stationsRes.ok ? await stationsRes.json() : [];
-                const trainData = trainsRes.ok ? await trainsRes.json() : [];
-
-                const combined = [
-                    ...stationData,
-                    ...trainData.map(train => ({
-                        stationName: train.source,
-                        stationCode: train.sourceCode || '',
-                        city: train.source,
-                        state: train.sourceState || ''
-                    })),
-                    ...trainData.map(train => ({
-                        stationName: train.destination,
-                        stationCode: train.destinationCode || '',
-                        city: train.destination,
-                        state: train.destinationState || ''
-                    }))
-                ];
-
-                stationList = buildStationSuggestions(combined);
-            } catch (error) {
-                console.error("Error fetching stations:", error);
-                stationList = [
-                    "NEW DELHI (NDLS)",
-                    "MUMBAI CENTRAL (MMCT)",
-                    "BAREILLY (BE)",
-                    "LUCKNOW (LKO)",
-                    "KANPUR CENTRAL (CNB)",
-                    "ALLAHABAD (PRYJ)",
-                    "VARANASI JN (BSB)",
-                    "NAGPUR (NGP)"
-                ];
-            }
-
-            autocomplete(document.getElementById("from"), stationList);
-            autocomplete(document.getElementById("to"), stationList);
-            document.querySelectorAll('.station-dropdown-btn').forEach((button) => {
-                button.addEventListener('click', () => {
-                    const input = document.getElementById(button.dataset.target);
-                    if (input) {
-                        showSuggestions(input, stationList);
-                        input.focus();
-                    }
-                });
-            });
-        }
-
-        function closeAllStationLists(activeInput) {
-            const allLists = document.getElementsByClassName('autocomplete-items');
-            Array.from(allLists).forEach((list) => {
-                if (list && list.id !== (activeInput ? activeInput.id + 'autocomplete-list' : '')) {
-                    list.remove();
+                const res = await fetch('/api/stations');
+                if (res.ok) {
+                    const stations = await res.json();
+                    stationList = stations.map(s => `${s.stationName} (${s.stationCode})`);
+                    setupAutocomplete(fromInput, stationList);
+                    setupAutocomplete(toInput, stationList);
                 }
-            });
+            } catch (e) { console.error("Error fetching stations", e); }
         }
 
-        function showSuggestions(inp, arr) {
-            closeAllStationLists(inp);
-            const filtered = arr.filter(option => option.toUpperCase().includes((inp.value || '').toUpperCase()));
-            const toShow = filtered.length > 0 ? filtered : arr.slice(0, 12);
-
-            if (!toShow.length) return false;
-            const list = document.createElement('DIV');
-            list.setAttribute('id', inp.id + 'autocomplete-list');
-            list.setAttribute('class', 'autocomplete-items');
-            inp.parentNode.parentNode.appendChild(list);
-            toShow.forEach((value) => {
-                const item = document.createElement('DIV');
-                item.innerHTML = value;
-                item.innerHTML += "<input type='hidden' value='" + value + "'>";
-                item.addEventListener('click', function() {
-                    inp.value = this.getElementsByTagName('input')[0].value;
-                    closeAllStationLists(inp);
-                });
-                list.appendChild(item);
-            });
-            return true;
-        }
-
-        function autocomplete(inp, arr) {
+        function setupAutocomplete(inp, arr) {
             let currentFocus;
-            inp.addEventListener("focus", function() {
-                showSuggestions(this, arr);
-            });
             inp.addEventListener("input", function(e) {
-                showSuggestions(this, arr);
-            });
-            inp.addEventListener("keydown", function(e) {
-                let x = document.getElementById(this.id + "autocomplete-list");
-                if (x) x = x.getElementsByTagName("div");
-                if (e.keyCode == 40) {
-                    currentFocus++;
-                    addActive(x);
-                } else if (e.keyCode == 38) {
-                    currentFocus--;
-                    addActive(x);
-                } else if (e.keyCode == 13) {
-                    e.preventDefault();
-                    if (currentFocus > -1) {
-                        if (x) x[currentFocus].click();
+                let a, b, i, val = this.value;
+                closeAllLists();
+                if (!val) return false;
+                currentFocus = -1;
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                this.parentNode.appendChild(a);
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].toUpperCase().includes(val.toUpperCase())) {
+                        b = document.createElement("DIV");
+                        b.innerHTML = arr[i].replace(new RegExp(val, 'gi'), "<strong>$&</strong>");
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        b.addEventListener("click", function(e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
                     }
                 }
             });
-            function addActive(x) {
-                if (!x) return false;
-                removeActive(x);
-                if (currentFocus >= x.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = (x.length - 1);
-                x[currentFocus].classList.add("autocomplete-active");
-            }
-            function removeActive(x) {
-                for (let i = 0; i < x.length; i++) {
-                    x[i].classList.remove("autocomplete-active");
+            function closeAllLists(elmnt) {
+                var x = document.getElementsByClassName("autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) { x[i].parentNode.removeChild(x[i]); }
                 }
             }
-            document.addEventListener("click", function (e) {
-                if (!e.target.closest('.station-dropdown-btn') && !e.target.closest('#' + inp.id) && !e.target.closest('.autocomplete-items')) {
-                    closeAllStationLists(inp);
-                }
-            });
+            document.addEventListener("click", e => closeAllLists(e.target));
         }
-
-        fetchStations();
-
-        let currentResults = [];
 
         async function searchTrains() {
-            const from = document.getElementById("from").value;
-            const to = document.getElementById("to").value;
-            const date = document.getElementById("journeyDate").value;
+            const from = fromInput.value;
+            const to = toInput.value;
+            const date = dateInput.value;
 
-            if(!from || !to || !date) {
-                alert("Please fill all fields");
-                return;
-            }
+            if (!from || !to || !date) { alert("Please fill all fields"); return; }
 
-            localStorage.setItem("from", from);
-            localStorage.setItem("to", to);
-            localStorage.setItem("journeyDate", date);
+            localStorage.setItem('from', from);
+            localStorage.setItem('to', to);
+            localStorage.setItem('journeyDate', date);
 
-            const resultsDiv = document.getElementById("resultsList");
-            resultsDiv.innerHTML = '<div class="no-trains"><i class="fas fa-spinner fa-spin fa-2x"></i><br><p>Searching for best trains...</p></div>';
+            const area = document.getElementById('resultsArea');
+            area.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><br>Searching for trains...</div>';
 
             try {
-                // Using the specific date search via TrainSchedule
-                const res = await fetch(`/api/schedules/search?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${date}`);
-                const schedules = await res.json();
-                currentResults = schedules;
-                displaySchedules(schedules);
-            } catch (err) {
-                resultsDiv.innerHTML = '<div class="no-trains"><h3>Error searching trains.</h3></div>';
-            }
+                const fromStation = from.includes('(') ? from.substring(0, from.indexOf('(')).trim() : from;
+                const toStation = to.includes('(') ? to.substring(0, to.indexOf('(')).trim() : to;
+
+                const res = await fetch(`/api/schedules/search?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}&date=${date}`);
+                if (res.ok) {
+                    const schedules = await res.json();
+                    displayResults(schedules);
+                }
+            } catch (e) { area.innerHTML = '<div class="no-results"><h3>Error searching trains</h3></div>'; }
         }
 
-        function displaySchedules(schedules) {
-            const resultsDiv = document.getElementById("resultsList");
+        async function findTrains() {
+            const query = document.getElementById('queryInput').value.trim();
+            if (!query) { alert("Please enter train name or number"); return; }
+
+            const area = document.getElementById('resultsArea');
+            area.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><br>Finding train...</div>';
+
+            try {
+                const res = await fetch(`/api/trains/find?query=${encodeURIComponent(query)}`);
+                if (res.ok) {
+                    const trains = await res.json();
+                    if (trains.length === 0) {
+                        area.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No Trains Found</h3><p>Try with a different name or number.</p></div>';
+                        return;
+                    }
+
+                    area.innerHTML = `<h3 style="margin-bottom:20px; color:var(--text-muted)">Search Results for "${query}"</h3>`;
+                    trains.forEach((t, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'train-card';
+                        card.innerHTML = `
+                            <div class="train-header">
+                                <div class="train-name">
+                                    <h3>${t.trainName}</h3>
+                                    <p>Train No: <span style="font-weight:700; color:var(--sidebar-active)">#${t.trainNumber}</span></p>
+                                </div>
+                                <div class="train-fare">
+                                    <h4>₹${t.sleeperFare || 500}</h4>
+                                    <p>Starting Fare</p>
+                                </div>
+                            </div>
+                            <div class="route-visual">
+                                <div class="time-box">
+                                    <h4>${t.departureTime}</h4>
+                                    <p>${t.source}</p>
+                                </div>
+                                <div class="route-path">
+                                    <i class="fas fa-long-arrow-alt-right"></i>
+                                    <span style="font-size:11px; display:block">Route Details</span>
+                                </div>
+                                <div class="time-box" style="text-align:right">
+                                    <h4>${t.arrivalTime}</h4>
+                                    <p>${t.destination}</p>
+                                </div>
+                            </div>
+                            <button class="btn-blue" onclick="alert('To book this train, please search by route and select a date.')">Book This Train</button>
+                        `;
+                        area.appendChild(card);
+                    });
+                }
+            } catch (e) { area.innerHTML = '<div class="no-results"><h3>Error finding trains</h3></div>'; }
+        }
+
+        function displayResults(schedules) {
+            const area = document.getElementById('resultsArea');
             if (schedules.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-trains"><h3>No trains found for this route on the selected date.</h3></div>';
+                area.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No Trains Found</h3><p>Try searching for a different date or route.</p></div>';
                 return;
             }
 
-            resultsDiv.innerHTML = "";
-            schedules.forEach((schedule, index) => {
-                const train = schedule.train;
-                const card = document.createElement("div");
-                card.className = "train-card";
-
+            area.innerHTML = "";
+            schedules.forEach((s, index) => {
+                const t = s.train;
+                const card = document.createElement('div');
+                card.className = 'train-card';
                 card.innerHTML = `
-                    <div class="train-info">
-                        <div class="train-name-num">
-                            <h3>${train.trainName}</h3>
-                            <p>Train No: <span style="color:var(--irctc-orange); font-weight:700">${train.trainNumber}</span></p>
+                    <div class="train-header">
+                        <div class="train-name">
+                            <h3>${t.trainName}</h3>
+                            <p>Train No: <span style="font-weight:700; color:var(--sidebar-active)">#${t.trainNumber}</span> | Runs Daily</p>
                         </div>
-                        <div style="text-align:right">
-                            <span style="color:var(--irctc-blue); font-weight:600">Date: ${schedule.journeyDate}</span>
-                            <br>
-                            <small style="color:${schedule.availableSeats > 0 ? '#2ecc71' : '#e74c3c'}; font-weight:600">
-                                ${schedule.availableSeats} Seats Available
-                            </small>
+                        <div class="train-fare">
+                            <h4>₹${t.sleeperFare || 500}</h4>
+                            <p>Base Fare</p>
                         </div>
                     </div>
-
-                    <div class="route-display">
-                        <div class="station-box">
-                            <h4>${schedule.departureTime || train.departureTime}</h4>
-                            <p>${train.source}</p>
+                    <div class="route-visual">
+                        <div class="time-box">
+                            <h4>${t.departureTime}</h4>
+                            <p>${t.source}</p>
                         </div>
-                        <div class="time-arrow">
+                        <div class="route-path">
                             <i class="fas fa-long-arrow-alt-right"></i>
-                            <div style="font-size:12px">Express</div>
+                            <span style="font-size:11px; display:block">Duration: 12h 30m</span>
                         </div>
-                        <div class="station-box" style="text-align:right">
-                            <h4>${schedule.arrivalTime || train.arrivalTime}</h4>
-                            <p>${train.destination}</p>
+                        <div class="time-box" style="text-align:right">
+                            <h4>${t.arrivalTime}</h4>
+                            <p>${t.destination}</p>
                         </div>
                     </div>
-
-                    <div class="availability-grid">
-                        ${renderClass('Sleeper', train.sleeperFare, 'SL', index)}
-                        ${renderClass('AC 3 Tier', train.ac3Fare, 'AC3', index)}
-                        ${renderClass('AC 2 Tier', train.ac2Fare, 'AC2', index)}
-                        ${renderClass('AC 1 Tier', train.ac1Fare, 'AC1', index)}
+                    <div class="class-options">
+                        ${renderClass('Sleeper', 'SL', t.sleeperFare, s)}
+                        ${renderClass('AC 3 Tier', '3A', t.ac3Fare, s)}
+                        ${renderClass('AC 2 Tier', '2A', t.ac2Fare, s)}
                     </div>
+                    <button class="btn-blue" onclick="bookNow(${index}, '${s.journeyDate}')">Select and Continue</button>
                 `;
-                resultsDiv.appendChild(card);
+                area.appendChild(card);
             });
         }
 
-        function renderClass(name, fare, code, resultIndex) {
+        function renderClass(name, code, fare, s) {
             if (!fare) return '';
             return `
-                <div class="class-btn" onclick="selectTrain(${resultIndex}, '${code}', ${fare})">
+                <div class="class-btn">
                     <strong>${code}</strong>
-                    <span>₹${fare}</span>
-                    <small>${name}</small>
+                    <span>AVL ${s.availableSeats}</span>
+                    <p style="font-size:10px; color:var(--text-muted); margin-top:5px;">₹${fare}</p>
                 </div>
             `;
         }
 
-        function selectTrain(index, code, fare) {
-            const schedule = currentResults[index];
-            const train = schedule.train;
-
-            // Save full train object and schedule info for booking
-            localStorage.setItem("selectedTrain", JSON.stringify(train));
-            localStorage.setItem("selectedTrainId", train.id);
-            localStorage.setItem("selectedScheduleId", schedule.id);
-            localStorage.setItem("classType", code);
-            localStorage.setItem("selectedFare", fare);
-            localStorage.setItem("journeyDate", schedule.journeyDate);
-
-            window.location.href = "booking.html";
+        function bookNow(index, date) {
+            // Setup booking and redirect
+            localStorage.setItem('selectedDate', date);
+            window.location.href = 'booking.html';
         }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = "login.html";
-        }
-
-        if(localStorage.getItem("from")) searchTrains();
+        fetchStations();
+        if (fromInput.value) searchTrains();
     </script>
 </body>
 </html>

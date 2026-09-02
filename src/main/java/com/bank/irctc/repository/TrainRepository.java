@@ -26,6 +26,9 @@ public interface TrainRepository extends JpaRepository<Train, Long> {
     // Search train by name
     List<Train> findByTrainNameContainingIgnoreCase(String trainName);
 
+    // Search by name or number
+    List<Train> findByTrainNameContainingIgnoreCaseOrTrainNumberContainingIgnoreCase(String name, String number);
+
     // Check whether train number already exists
     boolean existsByTrainNumber(String trainNumber);
 }

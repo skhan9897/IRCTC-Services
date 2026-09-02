@@ -23,43 +23,72 @@ class SearchActivity : AppCompatActivity() {
         val from = intent.getStringExtra("FROM") ?: ""
         val to = intent.getStringExtra("TO") ?: ""
         val date = intent.getStringExtra("DATE") ?: ""
+        val query = intent.getStringExtra("QUERY") ?: ""
         
-        binding.searchTitle.text = "Trains: $from to $to"
+        if (query.isNotEmpty()) {
+            binding.searchTitle.text = "Results for: $query"
+            findTrains(query)
+        } else {
+            binding.searchTitle.text = "$from → $to"
+            loadTrains(from, to, date)
+        }
+        
+        binding.backBtn.setOnClickListener { finish() }
         
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        
-        loadTrains(from, to, date)
+    }
+
+    private fun findTrains(query: String) {
+        lifecycleScope.launch {
+            binding.loader.visibility = View.VISIBLE
+            try {
+                val response = RetrofitClient.api.findTrains(query)
+                binding.loader.visibility = View.GONE
+                if (response.isSuccessful) {
+                    val trains = response.body() ?: emptyList()
+                    binding.recyclerView.adapter = TrainAdapter(trains) { train ->
+                        Toast.makeText(this@SearchActivity, "Search by route to book this train", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                binding.loader.visibility = View.GONE
+                Toast.makeText(this@SearchActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun loadTrains(from: String, to: String, date: String) {
         lifecycleScope.launch {
+            binding.loader.visibility = View.VISIBLE
             try {
-                // Extract station name from "Station Name (CODE)"
-                val fromStation = from.substringBefore(" (")
-                val toStation = to.substringBefore(" (")
+                // Extract station name from "Station Name (CODE)" or use full name
+                val fromStation = if (from.contains(" (")) from.substringBefore(" (") else from
+                val toStation = if (to.contains(" (")) to.substringBefore(" (") else to
                 
                 val response = RetrofitClient.api.searchSchedules(fromStation, toStation, date)
+                binding.loader.visibility = View.GONE
+                
                 if (response.isSuccessful) {
                     val schedules = response.body() ?: emptyList()
                     if (schedules.isEmpty()) {
-                        Toast.makeText(this@SearchActivity, "No trains found for this date", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SearchActivity, "No trains found for $date", Toast.LENGTH_SHORT).show()
                     }
                     binding.recyclerView.adapter = TrainAdapter(schedules) { schedule ->
-                        val train = schedule.train
                         val intent = Intent(this@SearchActivity, BookingActivity::class.java)
-                        intent.putExtra("TRAIN_ID", train.id)
-                        intent.putExtra("TRAIN_NAME", train.trainName)
-                        intent.putExtra("TRAIN_NUM", train.trainNumber)
-                        intent.putExtra("FROM", train.source)
-                        intent.putExtra("TO", train.destination)
+                        intent.putExtra("TRAIN_ID", schedule.train.id)
+                        intent.putExtra("TRAIN_NAME", schedule.train.trainName)
+                        intent.putExtra("TRAIN_NUM", schedule.train.trainNumber)
+                        intent.putExtra("FROM", schedule.train.source)
+                        intent.putExtra("TO", schedule.train.destination)
                         intent.putExtra("DATE", schedule.journeyDate)
-                        intent.putExtra("FARE", train.sleeperFare)
+                        intent.putExtra("FARE", schedule.train.sleeperFare ?: 500.0)
                         startActivity(intent)
                     }
                 } else {
                     Toast.makeText(this@SearchActivity, "Failed to load trains", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
+                binding.loader.visibility = View.GONE
                 Toast.makeText(this@SearchActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }

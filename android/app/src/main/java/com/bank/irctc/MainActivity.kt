@@ -89,13 +89,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val search = com.bank.irctc.databinding.ItemQuickActionBinding.bind(binding.actionSearch.root)
         search.actionLabel.text = "Search"
         search.actionIcon.setImageResource(R.drawable.ic_search)
-        search.root.setOnClickListener { startActivity(Intent(this, SearchActivity::class.java)) }
+        search.root.setOnClickListener { showSearchDialog() }
 
         val book = com.bank.irctc.databinding.ItemQuickActionBinding.bind(binding.actionBook.root)
         book.actionLabel.text = "Book"
         book.actionIcon.setImageResource(R.drawable.ic_home)
         book.actionIconBg.setCardBackgroundColor(Color.parseColor("#DCFCE7"))
         book.actionIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#15803D"))
+        book.root.setOnClickListener { showSearchDialog() }
 
         val cancel = com.bank.irctc.databinding.ItemQuickActionBinding.bind(binding.actionCancel.root)
         cancel.actionLabel.text = "Cancel"
@@ -108,6 +109,64 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         pnr.actionIcon.setImageResource(R.drawable.ic_notifications)
         pnr.actionIconBg.setCardBackgroundColor(Color.parseColor("#F3E8FF"))
         pnr.actionIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#7E22CE"))
+    }
+
+    private fun showSearchDialog() {
+        val dialog = android.app.AlertDialog.Builder(this).create()
+        val view = layoutInflater.inflate(R.layout.dialog_search, null)
+        dialog.setView(view)
+        
+        val from = view.findViewById<android.widget.AutoCompleteTextView>(R.id.fromStation)
+        val to = view.findViewById<android.widget.AutoCompleteTextView>(R.id.toStation)
+        val date = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.journeyDate)
+        val searchBtn = view.findViewById<android.widget.Button>(R.id.searchBtn)
+        val trainQuery = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.trainQuery)
+        val findBtn = view.findViewById<android.widget.Button>(R.id.findBtn)
+
+        // Setup Autocomplete for stations
+        lifecycleScope.launch {
+            try {
+                val res = RetrofitClient.api.getStations()
+                if (res.isSuccessful) {
+                    val stations = res.body()?.map { "${it.stationName} (${it.stationCode})" } ?: emptyList()
+                    val adapter = android.widget.ArrayAdapter(this@MainActivity, android.R.layout.simple_dropdown_item_1line, stations)
+                    from.setAdapter(adapter)
+                    to.setAdapter(adapter)
+                }
+            } catch (e: Exception) {}
+        }
+
+        // Setup date picker for dialog
+        date.setOnClickListener {
+            val c = Calendar.getInstance()
+            android.app.DatePickerDialog(this, { _, y, m, d ->
+                date.setText("$y-${m + 1}-$d")
+            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        searchBtn.setOnClickListener {
+            if (from.text.isNotEmpty() && to.text.isNotEmpty() && date.text!!.isNotEmpty()) {
+                val intent = Intent(this, SearchActivity::class.java)
+                intent.putExtra("FROM", from.text.toString())
+                intent.putExtra("TO", to.text.toString())
+                intent.putExtra("DATE", date.text.toString())
+                startActivity(intent)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        findBtn.setOnClickListener {
+            val q = trainQuery.text.toString()
+            if (q.isNotEmpty()) {
+                val intent = Intent(this, SearchActivity::class.java)
+                intent.putExtra("QUERY", q)
+                startActivity(intent)
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun loadDashboardData() {
@@ -172,8 +231,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setupDrawer() {
         binding.navigationView.setNavigationItemSelectedListener(this)
         val header = binding.navigationView.getHeaderView(0)
-        header.findViewById<TextView>(R.id.navUserName).text = sessionManager.getUserName()
-        header.findViewById<TextView>(R.id.navUserEmail).text = "mahir.khan@example.com"
+        val navName = header.findViewById<TextView>(R.id.navUserName)
+        val navEmail = header.findViewById<TextView>(R.id.navUserEmail)
+        
+        navName.text = sessionManager.getUserName()
+        // In a real app, email would be saved too. For now using mock.
+        navEmail.text = "passenger@irctc.co.in"
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

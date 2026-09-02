@@ -56,6 +56,18 @@ public class TrainController {
     }
 
     // =========================
+    // SEARCH BY NAME OR NUMBER
+    // =========================
+    @GetMapping("/find")
+    public ResponseEntity<List<Train>> findByNameOrNumber(
+            @RequestParam String query) {
+
+        List<Train> trains = trainService.searchByNameOrNumber(query);
+
+        return ResponseEntity.ok(trains);
+    }
+
+    // =========================
     // ADD TRAIN
     // =========================
     @PostMapping

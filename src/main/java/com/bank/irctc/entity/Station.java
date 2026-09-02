@@ -23,6 +23,13 @@ public class Station {
     public Station() {
     }
 
+    public Station(String stationCode, String stationName, String city, String state) {
+        this.stationCode = stationCode;
+        this.stationName = stationName;
+        this.city = city;
+        this.state = state;
+    }
+
     public Long getId() {
         return id;
     }
