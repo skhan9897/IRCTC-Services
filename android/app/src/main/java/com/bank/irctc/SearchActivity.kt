@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bank.irctc.databinding.ActivitySearchBinding
+import com.bank.irctc.models.Train
+import com.bank.irctc.models.TrainSchedule
 import com.bank.irctc.network.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -25,20 +27,20 @@ class SearchActivity : AppCompatActivity() {
         val date = intent.getStringExtra("DATE") ?: ""
         val query = intent.getStringExtra("QUERY") ?: ""
         
+        binding.backBtn.setOnClickListener { finish() }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        
         if (query.isNotEmpty()) {
             binding.searchTitle.text = "Results for: $query"
-            findTrains(query)
+            findTrainsByQuery(query)
         } else {
             binding.searchTitle.text = "$from → $to"
-            loadTrains(from, to, date)
+            binding.searchSubtitle.text = "Available trains on $date"
+            loadTrainsByRoute(from, to, date)
         }
-        
-        binding.backBtn.setOnClickListener { finish() }
-        
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun findTrains(query: String) {
+    private fun findTrainsByQuery(query: String) {
         lifecycleScope.launch {
             binding.loader.visibility = View.VISIBLE
             try {
@@ -46,8 +48,10 @@ class SearchActivity : AppCompatActivity() {
                 binding.loader.visibility = View.GONE
                 if (response.isSuccessful) {
                     val trains = response.body() ?: emptyList()
-                    binding.recyclerView.adapter = TrainAdapter(trains) { train ->
-                        Toast.makeText(this@SearchActivity, "Search by route to book this train", Toast.LENGTH_SHORT).show()
+                    binding.recyclerView.adapter = TrainAdapter(trains) { item ->
+                        if (item is Train) {
+                            Toast.makeText(this@SearchActivity, "Search by route and date to book ${item.trainName}", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -57,15 +61,14 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTrains(from: String, to: String, date: String) {
+    private fun loadTrainsByRoute(from: String, to: String, date: String) {
         lifecycleScope.launch {
             binding.loader.visibility = View.VISIBLE
             try {
-                // Extract station name from "Station Name (CODE)" or use full name
-                val fromStation = if (from.contains(" (")) from.substringBefore(" (") else from
-                val toStation = if (to.contains(" (")) to.substringBefore(" (") else to
+                val fromName = if (from.contains(" (")) from.substringBefore(" (") else from
+                val toName = if (to.contains(" (")) to.substringBefore(" (") else to
                 
-                val response = RetrofitClient.api.searchSchedules(fromStation, toStation, date)
+                val response = RetrofitClient.api.searchSchedules(fromName, toName, date)
                 binding.loader.visibility = View.GONE
                 
                 if (response.isSuccessful) {
@@ -73,23 +76,23 @@ class SearchActivity : AppCompatActivity() {
                     if (schedules.isEmpty()) {
                         Toast.makeText(this@SearchActivity, "No trains found for $date", Toast.LENGTH_SHORT).show()
                     }
-                    binding.recyclerView.adapter = TrainAdapter(schedules) { schedule ->
-                        val intent = Intent(this@SearchActivity, BookingActivity::class.java)
-                        intent.putExtra("TRAIN_ID", schedule.train.id)
-                        intent.putExtra("TRAIN_NAME", schedule.train.trainName)
-                        intent.putExtra("TRAIN_NUM", schedule.train.trainNumber)
-                        intent.putExtra("FROM", schedule.train.source)
-                        intent.putExtra("TO", schedule.train.destination)
-                        intent.putExtra("DATE", schedule.journeyDate)
-                        intent.putExtra("FARE", schedule.train.sleeperFare ?: 500.0)
-                        startActivity(intent)
+                    binding.recyclerView.adapter = TrainAdapter(schedules) { item ->
+                        if (item is TrainSchedule) {
+                            val intent = Intent(this@SearchActivity, BookingActivity::class.java)
+                            intent.putExtra("TRAIN_ID", item.train.id)
+                            intent.putExtra("TRAIN_NAME", item.train.trainName)
+                            intent.putExtra("TRAIN_NUM", item.train.trainNumber)
+                            intent.putExtra("FROM", item.train.source)
+                            intent.putExtra("TO", item.train.destination)
+                            intent.putExtra("DATE", item.journeyDate)
+                            intent.putExtra("FARE", item.train.sleeperFare ?: 500.0)
+                            startActivity(intent)
+                        }
                     }
-                } else {
-                    Toast.makeText(this@SearchActivity, "Failed to load trains", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 binding.loader.visibility = View.GONE
-                Toast.makeText(this@SearchActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SearchActivity, "Network Error", Toast.LENGTH_SHORT).show()
             }
         }
     }

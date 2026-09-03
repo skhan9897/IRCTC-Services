@@ -12,249 +12,104 @@
             --irctc-orange: #fb792b;
             --bg-light: #f0f2f5;
             --white: #ffffff;
-            --text-dark: #333;
             --text-muted: #777;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            margin: 0;
-            display: flex;
-            min-height: 100vh;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); margin: 0; display: flex; min-height: 100vh; }
 
-        /* Sidebar Styles */
-        .sidebar { width: 260px; background: var(--irctc-blue); color: white; padding: 20px 0; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
-        .sidebar-brand { padding: 0 25px 30px; display: flex; align-items: center; gap: 12px; }
-        .sidebar-brand i { font-size: 28px; }
-        .sidebar-brand span { font-size: 22px; font-weight: 700; letter-spacing: 1px; }
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1; }
-        .sidebar-menu li a {
-            padding: 14px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 4px solid transparent;
-        }
-        .sidebar-menu li a:hover, .sidebar-menu li a.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: var(--irctc-orange);
-        }
-        .logout-area { padding: 20px 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .logout-btn-side { display: flex; align-items: center; gap: 12px; color: #ff8a8a; text-decoration: none; }
+        .sidebar { width: 260px; background: #002266; color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 12px; }
+        .sidebar-nav { list-style: none; padding: 0; margin: 0; flex: 1; }
+        .sidebar-nav li a { padding: 14px 25px; display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; }
 
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 30px;
-        }
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; }
+        .booking-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
 
-        .booking-layout {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 30px;
-        }
+        .card { background: var(--white); border-radius: 15px; box-shadow: var(--shadow); padding: 25px; margin-bottom: 25px; }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--irctc-blue); display: flex; align-items: center; gap: 10px; }
 
-        .card {
-            background: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 30px;
-        }
+        .train-summary { background: #f8f9fa; border-radius: 12px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .summary-item label { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .summary-item span { font-weight: 700; color: #333; }
 
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--irctc-blue);
-        }
+        .passenger-form { border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 15px; position: relative; }
+        .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .form-group input, .form-group select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 
-        /* Train Info Summary */
-        .train-summary {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+        .add-btn { width: 100%; border: 2px dashed #213d77; background: transparent; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--irctc-blue); font-weight: 600; }
 
-        .summary-item label { display: block; font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-        .summary-item span { font-weight: 600; font-size: 15px; }
-
-        /* Passenger Form */
-        .passenger-block {
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .passenger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .remove-pass { color: #e74c3c; cursor: pointer; font-size: 13px; font-weight: 600; }
-
-        .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-        .form-group input, .form-group select {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-family: inherit;
-        }
-
-        .add-pass-btn {
-            background: transparent;
-            color: var(--irctc-blue);
-            border: 2px dashed var(--irctc-blue);
-            padding: 12px;
-            border-radius: 10px;
-            width: 100%;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .add-pass-btn:hover { background: rgba(33, 61, 119, 0.05); }
-
-        /* Sidebar Fare Card */
-        .fare-card {
-            position: sticky;
-            top: 30px;
-        }
-
-        .fare-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-        .fare-total {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #f0f2f5;
-            display: flex;
-            justify-content: space-between;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--irctc-blue);
-        }
-
-        .book-now-btn {
-            background: var(--irctc-orange);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: var(--transition);
-        }
-
-        .book-now-btn:hover { background: #e66a22; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(251, 121, 43, 0.3); }
-
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar-brand span, .sidebar-menu li a span { display: none; }
-            .main-content { margin-left: 80px; }
-            .booking-layout { grid-template-columns: 1fr; }
-            .fare-card { position: static; }
-        }
+        .fare-total { display: flex; justify-content: space-between; border-top: 2px solid #f0f2f5; padding-top: 20px; margin-top: 20px; font-size: 22px; font-weight: 800; color: var(--irctc-blue); }
+        .book-btn { width: 100%; padding: 15px; background: var(--irctc-orange); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 25px; }
     </style>
 </head>
 <body>
-
     <aside class="sidebar">
-        <div class="sidebar-brand"><i class="fas fa-subway"></i><span>IRCTC</span></div>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.html"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
-            <li><a href="search-train.html"><i class="fas fa-search"></i><span>Search Train</span></a></li>
-            <li><a href="my-bookings.html"><i class="fas fa-ticket-alt"></i><span>My Bookings</span></a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i><span>My Profile</span></a></li>
-            <li><a href="payment.html"><i class="fas fa-credit-card"></i><span>Payments</span></a></li>
+        <div class="sidebar-brand"><h2>IRCTC</h2></div>
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="search-train.html">Search Trains</a></li>
         </ul>
-        <div class="logout-area"><a href="#" class="logout-btn-side" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
     </aside>
 
     <main class="main-content">
         <div class="booking-layout">
-            <div class="booking-forms">
+            <div>
                 <div class="card">
-                    <div class="card-title"><i class="fas fa-train"></i> Train & Journey Details</div>
+                    <div class="card-title"><i class="fas fa-train"></i> Journey Details</div>
                     <div class="train-summary">
                         <div class="summary-item"><label>Train</label><span id="sumTrain">-</span></div>
                         <div class="summary-item"><label>Date</label><span id="sumDate">-</span></div>
                         <div class="summary-item"><label>From</label><span id="sumFrom">-</span></div>
                         <div class="summary-item"><label>To</label><span id="sumTo">-</span></div>
-                        <div class="summary-item"><label>Class</label><span id="sumClass">-</span></div>
-                        <div class="summary-item"><label>Departure</label><span id="sumTime">-</span></div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-title"><i class="fas fa-users"></i> Passenger Details</div>
                     <div id="passengerContainer"></div>
-                    <button class="add-pass-btn" onclick="addPassenger()">+ Add Another Passenger</button>
+                    <button class="add-btn" onclick="addPassenger()">+ Add Passenger</button>
                 </div>
             </div>
 
-            <div class="fare-side">
-                <div class="card fare-card">
+            <div>
+                <div class="card">
                     <div class="card-title">Fare Summary</div>
-                    <div class="fare-row"><span>Ticket Fare (<span id="countDisplay">0</span> Passenger)</span><span id="baseFareDisplay">₹0</span></div>
-                    <div class="fare-row"><span>Taxes & Fees</span><span>₹25.00</span></div>
-                    <div class="fare-total"><span>Total Amount</span><span id="totalFareDisplay">₹0</span></div>
-
-                    <button class="book-now-btn" onclick="processBooking()">PROCEED TO PAYMENT</button>
-                    <p style="font-size:11px; color:var(--text-muted); margin-top:15px; text-align:center">
-                        By clicking proceed, you agree to IRCTC's terms and conditions.
-                    </p>
+                    <div id="fareList"></div>
+                    <div class="fare-total"><span>Total Payable</span><span id="totalFare">₹0</span></div>
+                    <button class="book-btn" onclick="bookNow()">Confirm Booking</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        let pCount = 0;
-        const trainData = JSON.parse(localStorage.getItem("selectedTrain"));
+        const train = JSON.parse(localStorage.getItem("selectedTrain"));
         const classType = localStorage.getItem("classType");
-        const farePerHead = parseFloat(localStorage.getItem("selectedFare") || 0);
+        const fare = parseFloat(localStorage.getItem("selectedFare"));
+        const journeyDate = localStorage.getItem("journeyDate");
 
         function init() {
-            if (!trainData) { window.location.href = "search-train.html"; return; }
-            document.getElementById("sumTrain").textContent = `${trainData.trainName} (${trainData.trainNumber})`;
-            document.getElementById("sumDate").textContent = localStorage.getItem("journeyDate");
-            document.getElementById("sumFrom").textContent = trainData.source;
-            document.getElementById("sumTo").textContent = trainData.destination;
-            document.getElementById("sumClass").textContent = classType;
-            document.getElementById("sumTime").textContent = trainData.departureTime;
+            if(!train) { window.location.href="search-train.html"; return; }
+            document.getElementById("sumTrain").textContent = `${train.trainName} (#${train.trainNumber})`;
+            document.getElementById("sumDate").textContent = journeyDate;
+            document.getElementById("sumFrom").textContent = train.source;
+            document.getElementById("sumTo").textContent = train.destination;
             addPassenger();
         }
 
+        let pIdx = 0;
         function addPassenger() {
-            if (pCount >= 6) return;
-            pCount++;
+            pIdx++;
             const div = document.createElement("div");
-            div.className = "passenger-block";
-            div.id = `p-block-${pCount}`;
+            div.className = "passenger-form";
             div.innerHTML = `
-                <div class="passenger-header">
-                    <h4 style="margin:0">Passenger #${pCount}</h4>
-                    ${pCount > 1 ? `<span class="remove-pass" onclick="removeP(${pCount})">Remove</span>` : ''}
-                </div>
-                <div class="form-group">
+                <h4 style="margin:0">Passenger #${pIdx}</h4>
+                <div class="form-group" style="margin-top:15px">
                     <label>Full Name</label>
-                    <input type="text" placeholder="As per ID proof" class="p-name">
+                    <input type="text" class="p-name" placeholder="Enter name">
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Age</label><input type="number" class="p-age"></div>
@@ -268,59 +123,45 @@
             updateFare();
         }
 
-        function removeP(num) {
-            document.getElementById(`p-block-${num}`).remove();
-            pCount--;
-            updateFare();
-        }
-
         function updateFare() {
-            const currentCount = document.querySelectorAll(".passenger-block").length;
-            document.getElementById("countDisplay").textContent = currentCount;
-            const base = currentCount * farePerHead;
-            document.getElementById("baseFareDisplay").textContent = `₹${base}`;
-            document.getElementById("totalFareDisplay").textContent = `₹${base + 25}`;
+            const count = document.querySelectorAll(".passenger-form").length;
+            const total = count * fare;
+            document.getElementById("totalFare").textContent = `₹${total}`;
         }
 
-        async function processBooking() {
+        async function bookNow() {
             const userId = localStorage.getItem("userId");
-            if (!userId) { alert("Please login first"); return; }
-
+            const forms = document.querySelectorAll(".passenger-form");
             const passengers = [];
-            const pBlocks = document.querySelectorAll(".passenger-block");
 
-            for(let block of pBlocks) {
-                const name = block.querySelector(".p-name").value;
-                const age = block.querySelector(".p-age").value;
-                const gender = block.querySelector(".p-gender").value;
-                if(!name || !age) { alert("Please fill all passenger details"); return; }
+            for(let f of forms) {
+                const name = f.querySelector(".p-name").value;
+                const age = f.querySelector(".p-age").value;
+                const gender = f.querySelector(".p-gender").value;
+                if(!name || !age) { alert("Fill all details"); return; }
                 passengers.push({ name, age: parseInt(age), gender });
             }
 
-            const bookingData = {
+            const data = {
                 userId: parseInt(userId),
-                trainId: trainData.id,
-                journeyDate: localStorage.getItem("journeyDate"),
-                fromStation: trainData.source,
-                toStation: trainData.destination,
+                trainId: train.id,
+                journeyDate: journeyDate,
                 classType: classType,
-                totalFare: (passengers.length * farePerHead) + 25,
                 passengers: passengers
             };
 
             try {
-                const res = await fetch("/api/bookings", {
+                const res = await fetch('/api/bookings', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(bookingData)
+                    body: JSON.stringify(data)
                 });
-                const booking = await res.json();
-                localStorage.setItem("booking", JSON.stringify(booking));
+                const result = await res.json();
+                localStorage.setItem("lastBooking", JSON.stringify(result));
                 window.location.href = "payment.html";
-            } catch (e) { alert("Booking failed. Try again."); }
+            } catch (e) { alert("Booking failed"); }
         }
 
-        function logout() { localStorage.clear(); window.location.href = "login.html"; }
         init();
     </script>
 </body>

@@ -41,17 +41,25 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val response = RetrofitClient.api.login(LoginRequest(email, pass))
                 if (response.isSuccessful && response.body() != null) {
-                    val user = response.body()!!
-                    sessionManager.saveUser(user.id, user.name, user.email)
-                    Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+                    val loginRes = response.body()!!
+                    sessionManager.saveUser(loginRes.id, loginRes.name, loginRes.email)
+                    Toast.makeText(this@LoginActivity, "Login successful: ${loginRes.message}", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Invalid credentials"
-                    Toast.makeText(this@LoginActivity, "Login failed: $errorMsg", Toast.LENGTH_LONG).show()
+                    // Try to get error message from server
+                    val errorBody = response.errorBody()?.string()
+                    val msg = if (errorBody != null && errorBody.contains("message")) {
+                        // Very simple way to extract message from JSON if server sends one
+                        errorBody.substringAfter("\"message\":\"").substringBefore("\"")
+                    } else {
+                        "Invalid Email or Password"
+                    }
+                    Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LoginActivity, "Server not reachable. Check if Backend is running at 10.0.2.2:8080", Toast.LENGTH_LONG).show()
+                android.util.Log.e("LOGIN_ERROR", e.message ?: "Unknown Error")
             }
         }
     }

@@ -21,7 +21,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-color); display: flex; color: var(--text-dark); min-height: 100vh; }
 
-        /* Sidebar Styles (Same as Dashboard) */
         .sidebar { width: 260px; background: var(--sidebar-bg); height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
         .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 12px; }
         .sidebar-brand img { width: 42px; filter: brightness(0) invert(1); }
@@ -32,10 +31,8 @@
         .nav-list li a.active { border-left: 5px solid var(--sidebar-active); background: rgba(26, 115, 232, 0.15); }
         .nav-list li a i { width: 20px; font-size: 17px; }
 
-        /* Main Content */
         .main { margin-left: 260px; flex: 1; padding: 25px 40px; }
 
-        /* Search Box Section */
         .search-box { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px; }
         .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end; }
         .form-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
@@ -43,9 +40,7 @@
         .form-group input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-light); border-radius: 10px; font-size: 14px; font-family: inherit; }
         .form-group i { position: absolute; left: 15px; top: 38px; color: var(--sidebar-active); }
         .btn-search { background: var(--accent-orange); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; height: 46px; transition: 0.3s; }
-        .btn-search:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(251, 121, 43, 0.3); }
 
-        /* Results List */
         .train-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: 0.3s; border-left: 5px solid transparent; }
         .train-card:hover { border-left-color: var(--sidebar-active); transform: translateX(5px); }
         .train-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
@@ -53,28 +48,25 @@
         .train-name p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
         .train-fare { text-align: right; }
         .train-fare h4 { font-size: 20px; font-weight: 800; color: var(--accent-orange); }
-        .train-fare p { font-size: 11px; color: var(--text-muted); }
 
         .route-visual { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         .time-box h4 { font-size: 22px; font-weight: 900; color: #1e293b; }
-        .time-box p { font-size: 12px; color: var(--text-muted); }
         .route-path { flex: 1; text-align: center; color: #cbd5e1; }
-        .route-path i { font-size: 20px; }
 
-        .class-options { display: flex; gap: 15px; flex-wrap: wrap; }
+        .class-options { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;}
         .class-btn { flex: 1; min-width: 120px; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .class-btn:hover { border-color: var(--sidebar-active); background: #f0f7ff; }
+        .class-btn:hover, .class-btn.selected { border-color: var(--sidebar-active); background: #f0f7ff; }
         .class-btn strong { display: block; font-size: 15px; color: #1e293b; }
         .class-btn span { font-size: 12px; color: #10b981; font-weight: 700; margin-top: 5px; display: block; }
+        .class-btn p { font-size: 10px; color: var(--text-muted); margin-top: 5px; }
+
+        .btn-continue { width: 100%; background: var(--sidebar-active); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: 700; cursor: pointer; display: none; }
 
         .no-results { text-align: center; padding: 60px; color: var(--text-muted); }
-        .no-results i { font-size: 48px; margin-bottom: 20px; opacity: 0.2; }
 
-        /* Autocomplete */
         .autocomplete-items { position: absolute; border: 1px solid #d4d4d4; border-bottom: none; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #fff; border-radius: 0 0 10px 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; }
-        .autocomplete-items div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        .autocomplete-items div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #333; }
         .autocomplete-items div:hover { background-color: #f8fafc; color: var(--sidebar-active); }
-
     </style>
 </head>
 <body>
@@ -95,9 +87,7 @@
     <main class="main">
         <div class="search-box">
             <h2 style="margin-bottom: 25px; font-size: 20px; font-weight: 800;">Find Your Train</h2>
-
-            <!-- SEARCH BY ROUTE -->
-            <div class="search-grid" style="margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 30px;">
+            <div class="search-grid">
                 <div class="form-group">
                     <label>From Station</label>
                     <i class="fas fa-map-marker-alt"></i>
@@ -113,23 +103,13 @@
                     <i class="fas fa-calendar-alt"></i>
                     <input type="date" id="dateInput">
                 </div>
-                <button class="btn-search" onclick="searchTrains()">Search by Route</button>
-            </div>
-
-            <!-- SEARCH BY NAME/NUMBER -->
-            <div class="search-grid">
-                <div class="form-group" style="grid-column: span 3;">
-                    <label>Search by Train Name or Number</label>
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="queryInput" placeholder="e.g. Rajdhani or 12301" autocomplete="off">
-                </div>
-                <button class="btn-search" style="background: var(--sidebar-active);" onclick="findTrains()">Find Train</button>
+                <button class="btn-search" onclick="searchTrains()">Search Trains</button>
             </div>
         </div>
 
         <div id="resultsArea">
             <div class="no-results">
-                <i class="fas fa-train"></i>
+                <i class="fas fa-train fa-3x"></i>
                 <h3>Start Your Search</h3>
                 <p>Enter journey details above to see available trains and schedules.</p>
             </div>
@@ -141,15 +121,8 @@
         const toInput = document.getElementById('toInput');
         const dateInput = document.getElementById('dateInput');
 
-        // Set initial values from storage if any
-        fromInput.value = localStorage.getItem('from') || '';
-        toInput.value = localStorage.getItem('to') || '';
-        dateInput.value = localStorage.getItem('journeyDate') || '';
-
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
-
         let stationList = [];
+        let currentSchedules = [];
 
         async function fetchStations() {
             try {
@@ -164,12 +137,10 @@
         }
 
         function setupAutocomplete(inp, arr) {
-            let currentFocus;
             inp.addEventListener("input", function(e) {
                 let a, b, i, val = this.value;
                 closeAllLists();
                 if (!val) return false;
-                currentFocus = -1;
                 a = document.createElement("DIV");
                 a.setAttribute("id", this.id + "autocomplete-list");
                 a.setAttribute("class", "autocomplete-items");
@@ -200,148 +171,95 @@
             const from = fromInput.value;
             const to = toInput.value;
             const date = dateInput.value;
-
             if (!from || !to || !date) { alert("Please fill all fields"); return; }
 
-            localStorage.setItem('from', from);
-            localStorage.setItem('to', to);
-            localStorage.setItem('journeyDate', date);
-
-            const area = document.getElementById('resultsArea');
-            area.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><br>Searching for trains...</div>';
+            const resultsArea = document.getElementById('resultsArea');
+            resultsArea.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Finding best trains...</div>';
 
             try {
-                const fromStation = from.includes('(') ? from.substring(0, from.indexOf('(')).trim() : from;
-                const toStation = to.includes('(') ? to.substring(0, to.indexOf('(')).trim() : to;
+                const fromName = from.includes('(') ? from.substring(0, from.indexOf('(')).trim() : from;
+                const toName = to.includes('(') ? to.substring(0, to.indexOf('(')).trim() : to;
 
-                const res = await fetch(`/api/schedules/search?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}&date=${date}`);
+                const res = await fetch(`/api/schedules/search?from=${encodeURIComponent(fromName)}&to=${encodeURIComponent(toName)}&date=${date}`);
                 if (res.ok) {
-                    const schedules = await res.json();
-                    displayResults(schedules);
+                    currentSchedules = await res.json();
+                    displayResults(currentSchedules);
                 }
-            } catch (e) { area.innerHTML = '<div class="no-results"><h3>Error searching trains</h3></div>'; }
-        }
-
-        async function findTrains() {
-            const query = document.getElementById('queryInput').value.trim();
-            if (!query) { alert("Please enter train name or number"); return; }
-
-            const area = document.getElementById('resultsArea');
-            area.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><br>Finding train...</div>';
-
-            try {
-                const res = await fetch(`/api/trains/find?query=${encodeURIComponent(query)}`);
-                if (res.ok) {
-                    const trains = await res.json();
-                    if (trains.length === 0) {
-                        area.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No Trains Found</h3><p>Try with a different name or number.</p></div>';
-                        return;
-                    }
-
-                    area.innerHTML = `<h3 style="margin-bottom:20px; color:var(--text-muted)">Search Results for "${query}"</h3>`;
-                    trains.forEach((t, index) => {
-                        const card = document.createElement('div');
-                        card.className = 'train-card';
-                        card.innerHTML = `
-                            <div class="train-header">
-                                <div class="train-name">
-                                    <h3>${t.trainName}</h3>
-                                    <p>Train No: <span style="font-weight:700; color:var(--sidebar-active)">#${t.trainNumber}</span></p>
-                                </div>
-                                <div class="train-fare">
-                                    <h4>₹${t.sleeperFare || 500}</h4>
-                                    <p>Starting Fare</p>
-                                </div>
-                            </div>
-                            <div class="route-visual">
-                                <div class="time-box">
-                                    <h4>${t.departureTime}</h4>
-                                    <p>${t.source}</p>
-                                </div>
-                                <div class="route-path">
-                                    <i class="fas fa-long-arrow-alt-right"></i>
-                                    <span style="font-size:11px; display:block">Route Details</span>
-                                </div>
-                                <div class="time-box" style="text-align:right">
-                                    <h4>${t.arrivalTime}</h4>
-                                    <p>${t.destination}</p>
-                                </div>
-                            </div>
-                            <button class="btn-blue" onclick="alert('To book this train, please search by route and select a date.')">Book This Train</button>
-                        `;
-                        area.appendChild(card);
-                    });
-                }
-            } catch (e) { area.innerHTML = '<div class="no-results"><h3>Error finding trains</h3></div>'; }
+            } catch (e) { resultsArea.innerHTML = '<div class="no-results"><h3>Error searching trains.</h3></div>'; }
         }
 
         function displayResults(schedules) {
             const area = document.getElementById('resultsArea');
             if (schedules.length === 0) {
-                area.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No Trains Found</h3><p>Try searching for a different date or route.</p></div>';
+                area.innerHTML = '<div class="no-results"><h3>No trains found for this route/date.</h3></div>';
                 return;
             }
 
             area.innerHTML = "";
-            schedules.forEach((s, index) => {
+            schedules.forEach((s, idx) => {
                 const t = s.train;
                 const card = document.createElement('div');
                 card.className = 'train-card';
                 card.innerHTML = `
                     <div class="train-header">
-                        <div class="train-name">
-                            <h3>${t.trainName}</h3>
-                            <p>Train No: <span style="font-weight:700; color:var(--sidebar-active)">#${t.trainNumber}</span> | Runs Daily</p>
-                        </div>
-                        <div class="train-fare">
-                            <h4>₹${t.sleeperFare || 500}</h4>
-                            <p>Base Fare</p>
-                        </div>
+                        <div class="train-name"><h3>${t.trainName}</h3><p>#${t.trainNumber} | Runs Daily</p></div>
+                        <div class="train-fare"><h4>₹${t.sleeperFare || 500}</h4><p>Base Fare</p></div>
                     </div>
                     <div class="route-visual">
-                        <div class="time-box">
-                            <h4>${t.departureTime}</h4>
-                            <p>${t.source}</p>
-                        </div>
-                        <div class="route-path">
-                            <i class="fas fa-long-arrow-alt-right"></i>
-                            <span style="font-size:11px; display:block">Duration: 12h 30m</span>
-                        </div>
-                        <div class="time-box" style="text-align:right">
-                            <h4>${t.arrivalTime}</h4>
-                            <p>${t.destination}</p>
-                        </div>
+                        <div class="time-box"><h4>${t.departureTime}</h4><p>${t.source}</p></div>
+                        <div class="route-path"><i class="fas fa-long-arrow-alt-right"></i><p style="font-size:10px">${s.journeyDate}</p></div>
+                        <div class="time-box" style="text-align:right"><h4>${t.arrivalTime}</h4><p>${t.destination}</p></div>
                     </div>
-                    <div class="class-options">
-                        ${renderClass('Sleeper', 'SL', t.sleeperFare, s)}
-                        ${renderClass('AC 3 Tier', '3A', t.ac3Fare, s)}
-                        ${renderClass('AC 2 Tier', '2A', t.ac2Fare, s)}
+                    <div class="class-options" id="classes-${idx}">
+                        ${renderClass(idx, 'SL', 'Sleeper', t.sleeperFare, s.availableSeats)}
+                        ${renderClass(idx, '3A', 'AC 3 Tier', t.ac3Fare, s.availableSeats - 5)}
+                        ${renderClass(idx, '2A', 'AC 2 Tier', t.ac2Fare, s.availableSeats - 10)}
                     </div>
-                    <button class="btn-blue" onclick="bookNow(${index}, '${s.journeyDate}')">Select and Continue</button>
+                    <button class="btn-continue" id="btn-${idx}" onclick="proceedBooking(${idx})">Select & Continue</button>
                 `;
                 area.appendChild(card);
             });
         }
 
-        function renderClass(name, code, fare, s) {
+        function renderClass(idx, code, name, fare, avl) {
             if (!fare) return '';
             return `
-                <div class="class-btn">
+                <div class="class-btn" onclick="selectClass(${idx}, '${code}', ${fare}, this)">
                     <strong>${code}</strong>
-                    <span>AVL ${s.availableSeats}</span>
-                    <p style="font-size:10px; color:var(--text-muted); margin-top:5px;">₹${fare}</p>
+                    <span>AVL ${avl > 0 ? avl : 'WL'}</span>
+                    <p>₹${fare}</p>
                 </div>
             `;
         }
 
-        function bookNow(index, date) {
-            // Setup booking and redirect
-            localStorage.setItem('selectedDate', date);
+        let selectedBooking = null;
+
+        function selectClass(idx, code, fare, element) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.class-btn').forEach(b => b.classList.remove('selected'));
+            element.classList.add('selected');
+
+            document.getElementById(`btn-${idx}`).style.display = 'block';
+
+            const schedule = currentSchedules[idx];
+            selectedBooking = {
+                train: schedule.train,
+                journeyDate: schedule.journeyDate,
+                classType: code,
+                fare: fare
+            };
+        }
+
+        function proceedBooking(idx) {
+            if (!selectedBooking) return;
+            localStorage.setItem("selectedTrain", JSON.stringify(selectedBooking.train));
+            localStorage.setItem("classType", selectedBooking.classType);
+            localStorage.setItem("selectedFare", selectedBooking.fare);
+            localStorage.setItem("journeyDate", selectedBooking.journeyDate);
             window.location.href = 'booking.html';
         }
 
         fetchStations();
-        if (fromInput.value) searchTrains();
     </script>
 </body>
 </html>

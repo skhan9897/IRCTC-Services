@@ -43,14 +43,20 @@ class RegisterActivity : AppCompatActivity() {
                 val user = User(name = name, email = email, mobile = mobile, password = pass)
                 val response = RetrofitClient.api.register(user)
                 if (response.isSuccessful) {
-                    Toast.makeText(this@RegisterActivity, "Registration successful. Please login.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterActivity, "Registration successful! Please Login.", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Unknown error"
-                    Toast.makeText(this@RegisterActivity, "Registration failed: $errorMsg", Toast.LENGTH_LONG).show()
+                    val errorBody = response.errorBody()?.string()
+                    val msg = if (errorBody != null && errorBody.contains("message")) {
+                        errorBody.substringAfter("\"message\":\"").substringBefore("\"")
+                    } else {
+                        "Registration Failed (Email/Mobile might already exist)"
+                    }
+                    Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@RegisterActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Network Error. Is Backend running?", Toast.LENGTH_LONG).show()
+                android.util.Log.e("REG_ERROR", e.message ?: "Unknown Error")
             }
         }
     }
