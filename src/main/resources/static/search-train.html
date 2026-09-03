@@ -248,14 +248,15 @@
                 classType: code,
                 fare: fare
             };
+
+            // Save to localStorage immediately
+            localStorage.setItem("selectedTrain", JSON.stringify(schedule.train));
+            localStorage.setItem("classType", code);
+            localStorage.setItem("selectedFare", fare);
+            localStorage.setItem("journeyDate", schedule.journeyDate);
         }
 
         function proceedBooking(idx) {
-            if (!selectedBooking) return;
-            localStorage.setItem("selectedTrain", JSON.stringify(selectedBooking.train));
-            localStorage.setItem("classType", selectedBooking.classType);
-            localStorage.setItem("selectedFare", selectedBooking.fare);
-            localStorage.setItem("journeyDate", selectedBooking.journeyDate);
             window.location.href = 'booking.html';
         }
 

@@ -140,7 +140,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         date.setOnClickListener {
             val c = Calendar.getInstance()
             android.app.DatePickerDialog(this, { _, y, m, d ->
-                date.setText("$y-${m + 1}-$d")
+                val month = String.format("%02d", m + 1)
+                val day = String.format("%02d", d)
+                date.setText("$y-$month-$day")
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
         }
 

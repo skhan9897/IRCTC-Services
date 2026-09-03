@@ -77,12 +77,53 @@ public class TrainScheduleService {
             String to,
             LocalDate date) {
 
-        return scheduleRepository
+        String fromNorm = from.trim();
+        String toNorm = to.trim();
+        
+        System.out.println("Searching Schedules: From=" + fromNorm + ", To=" + toNorm + ", Date=" + date);
+        
+        // 1. Try Exact Match in Schedules
+        List<TrainSchedule> results = scheduleRepository
                 .findByTrainSourceIgnoreCaseAndTrainDestinationIgnoreCaseAndJourneyDate(
-                        from,
-                        to,
+                        fromNorm,
+                        toNorm,
                         date
                 );
+        
+        // 2. Fallback: Try Exact Match in Trains and wrap in Mock Schedules
+        if (results.isEmpty()) {
+            List<Train> trains = trainRepository.findBySourceIgnoreCaseAndDestinationIgnoreCase(fromNorm, toNorm);
+            for (Train t : trains) {
+                results.add(createMockSchedule(t, date));
+            }
+        }
+        
+        // 3. Last Resort: Try Partial Match (Containing) in Trains
+        if (results.isEmpty()) {
+            List<Train> allTrains = trainRepository.findAll();
+            for (Train t : allTrains) {
+                boolean sourceMatch = t.getSource().toLowerCase().contains(fromNorm.toLowerCase()) || 
+                                    fromNorm.toLowerCase().contains(t.getSource().toLowerCase());
+                boolean destMatch = t.getDestination().toLowerCase().contains(toNorm.toLowerCase()) || 
+                                  toNorm.toLowerCase().contains(t.getDestination().toLowerCase());
+                                  
+                if (sourceMatch && destMatch) {
+                    results.add(createMockSchedule(t, date));
+                }
+            }
+        }
+        
+        return results;
+    }
+
+    private TrainSchedule createMockSchedule(Train t, LocalDate date) {
+        TrainSchedule mock = new TrainSchedule();
+        mock.setTrain(t);
+        mock.setJourneyDate(date);
+        mock.setAvailableSeats(t.getAvailableSeats() != null ? t.getAvailableSeats() : 100);
+        mock.setTotalSeats(t.getTotalSeats() != null ? t.getTotalSeats() : 100);
+        mock.setStatus("ACTIVE");
+        return mock;
     }
 
     // =========================
